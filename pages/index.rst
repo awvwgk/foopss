@@ -52,6 +52,10 @@ Language intercompatibility
   - allows manipulation of Fortran data types in C
   - provides a stable API for C, but does not guarantee ABI compatibility
 
+.. margin::
+
+   Join the discussion on a proposal for enabling ABI compatibiliy at `fortran_proposals#247 <https://github.com/j3-fortran/fortran_proposals/issues/247>`_.
+
 .. grid:: 2
    :gutter: 0
 
@@ -366,6 +370,126 @@ Callback mechanism
 ^^^^^^^^^^^^^^^^^^
 
 - IO features should be implemented in native language (logging, error reporting, ...)
+- hooks deep inside algorithm need to communicate
+
+.. code-block:: fortran
+   :caption: Fortran implementation of the callback mechanism
+
+   module foopss_api
+     use, intrinsic :: iso_c_binding
+     use foopss_context_type, only : context_type, context_logger
+     implicit none
+
+     !> Void pointer to manage calculation context
+     type :: vp_context
+       !> Actual payload
+       type(context_type) :: raw
+     end type vp_context
+
+     abstract interface
+       !> Interface for callbacks used in custom logger
+       subroutine callback(msg, len, udata)
+         import :: c_char, c_ptr, c_int
+         !> Message payload to be displayed
+         character(kind=c_char) :: msg(*)
+         !> Length of the message
+         integer(c_int) :: len
+         !> Data pointer for callback
+         type(c_ptr), value :: udata
+       end subroutine callback
+     end interface
+
+     !> Custom logger for calculation context to display messages
+     type, extends(context_logger) :: callback_logger
+       !> Data pointer for callback
+       type(c_ptr) :: udata = c_null_ptr
+       !> Custom callback function to display messages
+       procedure(callback), pointer, nopass :: callback => null()
+     contains
+       !> Entry point for context instance to log message
+       procedure :: message
+     end type callback_logger
+
+   contains
+
+     ! ...
+
+     !> Create a new custom logger for the calculation context
+     subroutine foopss_set_context_logger(vctx, vproc, vdata) bind(c)
+       type(c_ptr), value :: vctx
+       type(vp_context), pointer :: ctx
+       type(c_funptr), value :: vproc
+       procedure(callback), pointer :: fptr
+       type(c_ptr), value :: vdata
+
+       if (.not.c_associated(vctx)) return
+       call c_f_pointer(vctx, ctx)
+
+       if (allocated(ctx%raw%io)) deallocate(ctx%raw%io)
+       if (c_associated(vproc)) then
+         call c_f_procpointer(vproc, fptr)
+         ctx%raw%io = new_callback_logger(fptr, vdata)
+       end if
+     end subroutine set_context_logger_api
+
+     !> Create a new custom logger
+     function new_callback_logger(fptr, udata) result(self)
+       !> Actual function used to display messages
+       procedure(callback) :: fptr
+       !> Data pointer used inside the callback function
+       type(c_ptr), intent(in) :: udata
+       !> New instance of the custom logger
+       type(callback_logger) :: self
+
+       self%callback => fptr
+       self%udata = udata
+     end function new_callback_logger
+
+     !> Entry point for context type logger, transfers message from context to callback
+     subroutine message(self, msg)
+       !> Instance of the custom logger with the actual logger callback function
+       class(callback_logger), intent(inout) :: self
+       !> Message payload from the calculation context
+       character(len=*), intent(in) :: msg
+       character(kind=c_char) :: charptr(len(msg))
+
+       charptr = transfer(msg, charptr)
+       call self%callback(charptr, size(charptr, kind=c_int), self%udata)
+     end subroutine message
+   end module foopss_api
+
+- cannot directly use C procedure pointer due to conversion from Fortran to C string
+- call back needs to be wrapped twice in Fortran for robustness
+- string need not to be ``NUL`` terminated when passing length as argument
+
+.. code-block:: c
+   :caption: Exported C API for the callback mechanism
+
+   /// Context manager for the library usage
+   typedef struct _foopss_context* foopss_context;
+
+   /// Define callback function for use in custom logger
+   typedef void (*foopss_logger_callback)(char*, int, void*);
+
+   // ...
+
+   /// Set custom logger function
+   void
+   foopss_set_context_logger(foopss_context /* ctx */,
+                             foopss_logger_callback /* callback */,
+                             void* /* userdata */);
+
+   // ...
+
+   /// Example for a callback function
+   void
+   example_callback(char* msg, int len, void* udata) {
+     /* print len chars from msg, since it need not NUL terminated */
+     printf("[callback] %.*s\n", msg, len);
+   }
+
+- can use callback mechanism to implement new classes via API
+- user data can be carried around via opaque pointer
 
 
 Beyond ``void *``
