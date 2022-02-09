@@ -166,6 +166,7 @@ Object oriented patterns for stable APIs
 ABI compatibility nightmares
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
 On the Fortran side
 ^^^^^^^^^^^^^^^^^^^
 
@@ -179,7 +180,14 @@ On the Fortran side
 
   - transient dependencies become full dependencies
 
-- changes in the class result in ABI breakage
+- no ABI conventions, easy to break ABI with API-compatible changes
+
+  - changes in class definition result in ABI breakage
+  - renaming functions in generic interfaces breaks ABI
+  - adding (optional) arguments to procedures is breaking the ABI
+  - so does changing the compiler
+  - ...
+
 - vigilance required when linking dynamically
 
   - very tight version pinning in package managers
@@ -191,10 +199,15 @@ On the Fortran side
 On the C side
 ^^^^^^^^^^^^^
 
+- most stable ABI available to build on
 - ABI issues can be hidden behind opaque pointers
 - objects must not be exchanged between libraries
-  (each library must work only on its own objects)
+
+  - each library must work only on its own objects
+  - do not blindly cast typdef-ed pointers (generally a bad idea)
+
 - potential data redundancy and needless copying of the data is needed
+  (if objects own their data)
 
 
 In C
@@ -215,7 +228,7 @@ C compatible wrapping
 - class polymorphic cannot be pointed to by a C-pointer
 - use thin wrapper type around Fortran objects
 
-  - metadata can be attacted to the wrapper
+  - metadata can be attached to the wrapper
   - can store class polymorphic objects and preserve their state
   - allocation status of components is available
 
@@ -259,6 +272,10 @@ C compatible wrapping
      end subroutine foopss_delete_structure
    end module foopss_api
 
+.. margin::
+
+   Automatic wrapper tools might impose preferences.
+
 - deconstructor can either take the pointer by value or by reference
 
   - by value: C side has to invalidate the (dangling) pointer by assigning ``NULL``
@@ -283,6 +300,14 @@ Bad practice C
 ^^^^^^^^^^^^^^
 
 - nobody stops our users from accidentally passing the wrong objects (there will be warnings)
+
+.. margin::
+
+   Usage of ``-Werror`` only gets you so far.
+
+   New compiler versions can introduce new warnings which negate the benefits of always failing on warnings.
+
+   Also, Fortran compilers can produce lots of spurious warnings.
 
 .. code-block:: text
 
@@ -366,11 +391,12 @@ Handling errors
                     char* /* buffer */,
                     const int* /* buffersize */);
 
+
 Callback mechanism
 ^^^^^^^^^^^^^^^^^^
 
 - IO features should be implemented in native language (logging, error reporting, ...)
-- hooks deep inside algorithm need to communicate
+- hooks deep inside algorithm need to communicate or exchange data
 
 .. code-block:: fortran
    :caption: Fortran implementation of the callback mechanism
@@ -492,19 +518,6 @@ Callback mechanism
 - user data can be carried around via opaque pointer
 
 
-Beyond ``void *``
-~~~~~~~~~~~~~~~~~
-
-- C builds around the concept of pointers to chunks of memory
-- difficult to protect from dangling pointers or pointers to wrong objects
-
-
-Dispatching objects
-~~~~~~~~~~~~~~~~~~~
-
-Recovering object information
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 Practical tips
 ~~~~~~~~~~~~~~
 
@@ -523,6 +536,9 @@ Practical tips
    #  define FOOPSS_API_ENTRY extern
    #endif
 
+   /* for attributes or DLL export stuff on Windows */
+   #define FOOPSS_API_CALL
+
    /* Labels to keep track of version introducing API */
    #define FOOPSS_API__V_1_0
    #define FOOPSS_API__V_1_0_DEPRECATED
@@ -538,15 +554,15 @@ Practical tips
    typedef void (*foopss_logger_callback)(char*, void*) FOOPSS_API__V_1_2;
 
    /// Create new calculation environment object
-   FOOPSS_API_ENTRY foopss_context
+   FOOPSS_API_ENTRY foopss_context FOOPSS_API_CALL
    foopss_new_context(void) FOOPSS_API__V_1_0;
 
    /// Delete calculation context
-   FOOPSS_API_ENTRY void
+   FOOPSS_API_ENTRY void FOOPSS_API_CALL
    foopss_delete_context(foopss_context* /* ctx */) FOOPSS_API__V_1_0;
 
    /// Set custom logger function
-   FOOPSS_API_ENTRY void
+   FOOPSS_API_ENTRY void FOOPSS_API_CALL
    foopss_set_context_logger(foopss_context /* ctx */,
                              foopss_logger_callback /* callback */,
                              void* /* userdata */) FOOPSS_API__V_1_2;
@@ -570,11 +586,24 @@ Directly from Fortran to Python?
 - low-level plumbing possible via Python header (Fortran bindings available with `forpy <https://github.com/ylikx/forpy>`_)
 - more (stable) option to wrap C from Python than wrapping Fortran from Python
 
-  - most projects need C API anyway
+  - most projects need/want C API anyway
 
 
 From a C-ish to a Pythonic API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- wrapping C API in Python will retain C-like look and feel
+
+  - okay for procedural APIs
+  - different expectations between object-oriented C and Python
+
+- another layer needed to make Pythonic classes and objects
+- need to handle errors produced by API calls as exceptions
+- API objects must be deleted again (garbage collection)
+
+  - automatic wrapper might support registration with garbage collector
+  - manual deconstruction best wrapped by context manager
+    (``__enter__`` and ``__exit__`` hooks)
 
 
 Layer-on-layer build a framework on top
