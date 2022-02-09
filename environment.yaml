@@ -5,6 +5,7 @@ dependencies:
   - python
   - sphinx
   - sphinx-intl
+  - sphinx-comments
   - sphinx-copybutton
   - sphinx-design
   - sphinx-book-theme >=0.2

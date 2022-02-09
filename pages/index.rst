@@ -54,7 +54,7 @@ Language intercompatibility
 
 .. margin::
 
-   Join the discussion on a proposal for enabling ABI compatibiliy at `fortran_proposals#247 <https://github.com/j3-fortran/fortran_proposals/issues/247>`_.
+   Join the discussion on a proposal for enabling ABI compatibility at `fortran_proposals#247 <https://github.com/j3-fortran/fortran_proposals/issues/247>`_.
 
 .. grid:: 2
    :gutter: 0
@@ -94,7 +94,7 @@ Language intercompatibility
   (relying on semantic versioning conventions)
 
 
-Object oriented patterns for stable APIs
+Object-oriented patterns for stable APIs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - adding new features does not break function signatures
@@ -102,7 +102,7 @@ Object oriented patterns for stable APIs
 
 .. margin::
 
-   `NLopt <https://nlopt.readthedocs.io>`_ is a prime example for a library with interfaces and bindings in many languages.
+   `NLopt <https://nlopt.readthedocs.io>`_ is a prime example of a library with interfaces and bindings in many languages.
 
    It can be used from C, C++, Fortran, Matlab, Octave, Python, Guile, Julia,
    R, Lua, OCaml, or Rust.
@@ -172,9 +172,9 @@ On the Fortran side
 
 .. margin::
 
-   ABI issues can be ignored in case of static linking.
+   ABI issues can be ignored in the case of static linking.
 
-   However, dynamic linking remains preferred in case of shared libraries which should be loaded into other languages.
+   However, dynamic linking remains preferred in the case of shared libraries which should be loaded into other languages.
 
 - object-oriented APIs can leak symbols into dependent libraries
 
@@ -486,7 +486,7 @@ Callback mechanism
 
 - cannot directly use C procedure pointer due to conversion from Fortran to C string
 - call back needs to be wrapped twice in Fortran for robustness
-- string need not to be ``NUL`` terminated when passing length as argument
+- string need not be ``NUL`` terminated when passing length as an argument
 
 .. code-block:: c
    :caption: Exported C API for the callback mechanism
@@ -581,7 +581,7 @@ Directly from Fortran to Python?
   - `numpy.f2py <https://numpy.org/doc/stable/f2py/usage.html>`_: is mainly targeting legacy Fortran code (objects are not supported)
   - `f90wrap <https://github.com/jameskermode/f90wrap>`_: is a wrapper generator for Fortran 90
   - `gfort2py <https://github.com/rjfarmer/gfort2py>`_: GFortran module file based wrapper generator
-  - many more abandonded projects and tools
+  - many more abandoned projects and tools
 
 - low-level plumbing possible via Python header (Fortran bindings available with `forpy <https://github.com/ylikx/forpy>`_)
 - more (stable) option to wrap C from Python than wrapping Fortran from Python
@@ -592,7 +592,7 @@ Directly from Fortran to Python?
 From a C-ish to a Pythonic API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- wrapping C API in Python will retain C-like look and feel
+- wrapping C API in Python will retain a C-like look and feel
 
   - okay for procedural APIs
   - different expectations between object-oriented C and Python
@@ -601,8 +601,8 @@ From a C-ish to a Pythonic API
 - need to handle errors produced by API calls as exceptions
 - API objects must be deleted again (garbage collection)
 
-  - automatic wrapper might support registration with garbage collector
-  - manual deconstruction best wrapped by context manager
+  - automatic wrapper might support registration with the garbage collector
+  - manual deconstruction best wrapped by a context manager
     (``__enter__`` and ``__exit__`` hooks)
 
 
@@ -621,3 +621,19 @@ What can we do?
 
 What would we like?
 ~~~~~~~~~~~~~~~~~~~
+
+
+Discussion
+----------
+
+.. raw:: html
+
+   <script
+      type="text/javascript"
+      src="https://utteranc.es/client.js"
+      async="async"
+      repo="awvwgk/foopss"
+      issue-number="2"
+      theme="github-light"
+      crossorigin="anonymous"
+   />

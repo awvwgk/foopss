@@ -7,6 +7,7 @@ extensions = [
     "sphinx_design",
     "sphinx_copybutton",
     "sphinx.ext.intersphinx",
+    "sphinx_comments",
 ]
 myst_enable_extensions = [
     "colon_fence",
@@ -60,3 +61,5 @@ html_static_path = ["_static"]
 templates_path = ["_templates"]
 
 master_doc = "index"
+
+comments_config = {}
