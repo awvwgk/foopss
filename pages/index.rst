@@ -589,6 +589,139 @@ Directly from Fortran to Python?
   - most projects need/want C API anyway
 
 
+Python ctypes
+^^^^^^^^^^^^^
+
+- `ctypes <https://docs.python.org/3/library/ctypes.html>`_: low-level Python interface to C
+- dynamic loading of shared libraries via dlopen
+
+  - requires definition of signatures in Python (duplication)
+  - library name is platform dependent and logic must be handled in Python
+  - no type safety for opaque pointers (all declared as ``c_void_p``)
+
+- no automatic deconstruction available for objects
+
+  - manual deconstruction best wrapped by a context manager
+    (``__enter__`` and ``__exit__`` hooks)
+
+- `numpy.ctypeslib <https://numpy.org/doc/stable/reference/routines.ctypeslib.html>`_ provides convenience functions
+
+  - numpy objects pass through API without additional effort (``numpy.ctypeslib.as_array``)
+
+- no compiled dependencies in your Python package
+- no additional dependencies in Python
+
+
+.. code-block:: python
+   :caption: Example usage of ctypes
+
+   import ctypes as ct
+   import numpy as np
+   import os.path as op
+
+   # layout when installed in same $PREFIX is usually (not true on Windows)
+   # $PREFIX/lib/libfoopss.*
+   # $PREFIX/lib/python3.x/site-packages/foopss.py
+   _foopss = np.ctypeslib.load_library('libfoopss', op.dirname(__file__).parent.parent)
+
+   # Can only declare opaque handle, but not typedef it
+   _foopss.foopss_new_context.restype = ct.c_void_p
+
+   # For ctypes passing the void* by value might be preferable
+   _foopss.foopss_delete_context.argtypes = [ct.POINTER(ct.c_void_p)]
+
+   # Prototype for callback function, pass-through PyObject
+   logger_callback = ct.CFUNCTYPE(None, ct.c_char_p, ct.c_int, ct.py_object)
+
+   # Some type safety for callback signatures, user-data
+   _foopss.foopss_set_context_logger.argtypes = [ct.c_void_p, logger_callback, ct.py_object]
+   _foopss.foopss_set_context_logger.restype = None
+
+   # ...
+
+
+Foreign function interface
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- CFFI module allows different access modes
+
+  - in-line ABI level mode similar to Python ctypes (allows typdefs)
+  - out-of-line API mode most useful for creating standalone extension modules
+
+- C parser is very limited, manual preprocessing of headers required
+
+
+.. code-block:: python
+   :caption: ffibuilder.py
+
+   import os
+   import subprocess
+   import cffi
+
+   library = "foopss"
+   include_header = f'#include "{library}.h"'
+   prefix_var = library.upper() + "_PREFIX"
+   if prefix_var not in os.environ:
+       prefix_var = "CONDA_PREFIX"
+   module_name = f"{library}._lib{library}"
+
+   # Detection logic must provide:
+   # - dict with libraries to link as well as include, library and runtime directories
+   # - additional flags for C-compiler to find headers
+   try:
+       # pkgconfig module provides distutils/cffi compatible data
+       import pkgconfig
+       if not pkgconfig.exists(library):
+           raise ModuleNotFoundError(f"Unable to find pkg-config package '{library}'")
+
+       kwargs = pkgconfig.parse(library)
+       cflags = pkgconfig.cflags(library).split()
+
+   except ModuleNotFoundError:
+       # manual construction of data from installation prefix possible
+       kwargs = dict(libraries=[library])
+       cflags = []
+       if prefix_var in os.environ:
+           prefix = os.environ[prefix_var]
+           kwargs.update(
+               include_dirs=[os.path.join(prefix, "include")],
+               library_dirs=[os.path.join(prefix, "lib")],
+               runtime_library_dirs=[os.path.join(prefix, "lib")],
+           )
+           cflags.append("-I" + os.path.join(prefix, "include"))
+
+   # pycparser cannot handle preprocessor gracefully
+   # - manual preprocessing required via C compiler or cpp required
+   cc = os.environ["CC"] if "CC" in os.environ else "cc"
+   p = subprocess.Popen(
+       [cc, *cflags, "-E", "-"],
+       stdin=subprocess.PIPE,
+       stdout=subprocess.PIPE,
+       stderr=subprocess.PIPE,
+   )
+   out, err = p.communicate(include_header.encode())
+
+   # Definitions of API from header
+   cdefs = out.decode()
+
+   # Final construction extension module source
+   # - distutils/setuptools handle this automatically
+   # - manual run has to write the C source
+   ffibuilder = cffi.FFI()
+   ffibuilder.set_source(module_name, include_header, **kwargs)
+   ffibuilder.cdef(cdefs)
+   if __name__ == "__main__":
+      ffibuilder.distutils_extension(".")
+
+
+Do-it-yourself Python module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Python header (``Python.h``) provides you with everything to define a full extension module
+- can be done directly in Fortran via ``bind(c)`` (see `forpy <https://github.com/ylikx/forpy>`_)
+- build system must know naming convention for ABI suffix
+
+
 From a C-ish to a Pythonic API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -604,6 +737,7 @@ From a C-ish to a Pythonic API
   - automatic wrapper might support registration with the garbage collector
   - manual deconstruction best wrapped by a context manager
     (``__enter__`` and ``__exit__`` hooks)
+
 
 
 Layer-on-layer build a framework on top
