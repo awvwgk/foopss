@@ -214,12 +214,86 @@ In C
 ----
 
 
+
 Emulating objects in C
 ~~~~~~~~~~~~~~~~~~~~~~
 
 - objects are represented as opaque pointers (``void *``)
 - typedef-ed pointers for better readability and some type safety
 - C11 ``_Generic`` can be used to dispatch at compile time
+
+
+What makes a classy object
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fortran standard does not specify implementation of class objects
+- simple design model are C structs with overlapping fields and procedure pointers
+
+.. margin::
+
+   If you need a quick refresher in C try the `cdecl translator <https://www.cdecl.org/>`_.
+
+.. tab-set::
+
+   .. tab-item:: Fortran
+
+      .. code-block:: fortran
+         :caption: Crude (and possibly incorrect) Fortran class model
+
+         type :: a_cls
+           character(len=:), allocatable :: label
+           integer :: ndim = 0
+           real(wp), allocatable :: bounds(:)
+         contains
+           procedure :: set_bounds
+           procedure :: get_bounds
+         end type
+
+         type, extends(a_cls) :: b_cls
+         ! character(len=:), allocatable :: label
+         ! integer :: ndim = 0
+         ! real(wp), allocatable :: bounds(:)
+         ! procedure, pointer :: set_bounds
+         ! procedure, pointer :: get_bounds
+           real(wp) :: scale = 1.0_wp
+         contains
+           procedure :: set_scale
+         end type
+
+   .. tab-item:: C
+
+      .. code-block:: c
+         :caption: Emulating class objects in C
+
+         struct a_cls {
+           char* label;
+           int ndim;
+           double* bounds;
+
+           void (* set_bounds)(struct a_cls*, const double*);
+           void (* get_bounds)(struct a_cls*, double*);
+         };
+
+         struct b_cls {
+           char* label;
+           int ndim;
+           double* bounds;
+           void (* set_bounds)(struct a_cls*, const double*);
+           void (* get_bounds)(struct a_cls*, double*);
+           double scale;
+
+           void (* set_scale)(struct b_cls*, double);
+         };
+
+
+- C-ish way of polymorphism builds on memory layout and casting pointers
+
+  - procedure pointers provide a way to dispatch at runtime
+  - casting around pointers probably worse than ``select type`` in Fortran
+
+.. important::
+
+   Objects do not have to be transparent to be usable
 
 
 C compatible wrapping
@@ -280,10 +354,6 @@ C compatible wrapping
 
   - by value: C side has to invalidate the (dangling) pointer by assigning ``NULL``
   - by reference: Fortran side can nullify C pointer
-
-.. margin::
-
-   Adding named arguments in the prototype is considered part of the API, changing the argument name is therefore a breaking API change.
 
 .. code-block:: c
 
@@ -643,13 +713,21 @@ Python ctypes
 Foreign function interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- CFFI module allows different access modes
+- `cffi <https://cffi.readthedocs.org>`_ module allows different access modes
 
-  - in-line ABI level mode similar to Python ctypes (allows typdefs)
+  - in-line ABI level mode similar to Python ctypes (but allows typdefs)
   - out-of-line API mode most useful for creating standalone extension modules
+  - runtime requirement on cffi module
 
 - C parser is very limited, manual preprocessing of headers required
 
+  - preprocessed header can produce complete extension module source code
+  - low effort solution for creating the actual glue code and defining the extension module
+
+
+.. margin::
+
+   The `pkgconfig <https://github.com/matze/pkgconfig>`_ module can produce cffi compatible ``kwargs`` and ``cflags`` directly from a pc file
 
 .. code-block:: python
    :caption: ffibuilder.py
@@ -668,27 +746,16 @@ Foreign function interface
    # Detection logic must provide:
    # - dict with libraries to link as well as include, library and runtime directories
    # - additional flags for C-compiler to find headers
-   try:
-       # pkgconfig module provides distutils/cffi compatible data
-       import pkgconfig
-       if not pkgconfig.exists(library):
-           raise ModuleNotFoundError(f"Unable to find pkg-config package '{library}'")
-
-       kwargs = pkgconfig.parse(library)
-       cflags = pkgconfig.cflags(library).split()
-
-   except ModuleNotFoundError:
-       # manual construction of data from installation prefix possible
-       kwargs = dict(libraries=[library])
-       cflags = []
-       if prefix_var in os.environ:
-           prefix = os.environ[prefix_var]
-           kwargs.update(
-               include_dirs=[os.path.join(prefix, "include")],
-               library_dirs=[os.path.join(prefix, "lib")],
-               runtime_library_dirs=[os.path.join(prefix, "lib")],
-           )
-           cflags.append("-I" + os.path.join(prefix, "include"))
+   kwargs = dict(libraries=[library])
+   cflags = []
+   if prefix_var in os.environ:
+       prefix = os.environ[prefix_var]
+       kwargs.update(
+           include_dirs=[os.path.join(prefix, "include")],
+           library_dirs=[os.path.join(prefix, "lib")],
+           runtime_library_dirs=[os.path.join(prefix, "lib")],
+       )
+       cflags.append("-I" + os.path.join(prefix, "include"))
 
    # pycparser cannot handle preprocessor gracefully
    # - manual preprocessing required via C compiler or cpp required
@@ -714,37 +781,129 @@ Foreign function interface
       ffibuilder.distutils_extension(".")
 
 
-Do-it-yourself Python module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+From errors to exceptions
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Python header (``Python.h``) provides you with everything to define a full extension module
-- can be done directly in Fortran via ``bind(c)`` (see `forpy <https://github.com/ylikx/forpy>`_)
-- build system must know naming convention for ABI suffix
+- ctypes or cffi wrapped C-libraries still look and feel like C when used in Python
+- create convenience wrappers for creating (and deleting) objects
+
+  - cffi can setup proper a garbage collection routine for any object
+
+- use a decorator for transforming library errors to exception
+
+.. margin::
+
+   With a consistent design of the API, *i.e.* always passing the error handle as first element, wrapping of library functions becomes much easier
+
+.. code-block:: python
+   :caption: foopss/library.py
+
+   import functools
+   from ._libfoopss import ffi, lib
+
+   def _delete_error(err):
+       """Delete an error handle object"""
+       ptr = ffi.new("foopss_error *")
+       ptr[0] = err
+       lib.foopss_delete_error(ptr)
+
+
+   def new_error():
+       """Create new error handle object"""
+       return ffi.gc(lib.foopss_new_error(), _delete_error)
+
+
+   def error_check(func):
+       """Handle errors for library functions that require an error handle"""
+
+       @functools.wraps(func)
+       def handle_error(*args, **kwargs):
+           """Run function and than compare context"""
+           _err = new_error()
+           value = func(_err, *args, **kwargs)
+           if lib.foopss_check_error(_err):
+               _message = ffi.new("char[]", 512)
+               lib.foopss_get_error(_err, _message, ffi.NULL)
+               raise RuntimeError(ffi.string(_message).decode())
+           return value
+
+       return handle_error
 
 
 From a C-ish to a Pythonic API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- wrapping C API in Python will retain a C-like look and feel
+- thin wrappers still retain C-ish handling for objects
 
   - okay for procedural APIs
   - different expectations between object-oriented C and Python
 
 - another layer needed to make Pythonic classes and objects
-- need to handle errors produced by API calls as exceptions
-- API objects must be deleted again (garbage collection)
 
-  - automatic wrapper might support registration with the garbage collector
-  - manual deconstruction best wrapped by a context manager
-    (``__enter__`` and ``__exit__`` hooks)
+.. code-block:: python
+
+   import numpy as np
+
+   from . import library
 
 
+   class Structure:
+       """
+       Represents a wrapped structure object in foopss.
 
-Layer-on-layer build a framework on top
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       Example
+       -------
+       >>> from foopss.interface import Structure
+       >>> import numpy as np
+       >>> mol = Structure(
+       ...     positions=np.array([
+       ...         [+0.00000000000000, +0.00000000000000, -0.73578586109551],
+       ...         [+1.44183152868459, +0.00000000000000, +0.36789293054775],
+       ...         [-1.44183152868459, +0.00000000000000, +0.36789293054775],
+       ...     ]),
+       ...     numbers = np.array([8, 1, 1]),
+       ... )
+       ...
+       """
+
+       _mol = library.ffi.NULL
+
+       def __init__(self, numbers, positions, lattice, periodic):
+           _numbers = np.ascontiguousarray(numbers, dtype="i4")
+           _positions = np.ascontiguousarray(positions, dtype="float")
+           _lattice = np.ascontiguousarray(lattice, dtype="float")
+           _periodic = np.ascontiguousarray(periodic, dtype="bool")
+
+           self._mol = library.new_structure(
+               self._natoms,
+               _cast("int*", _numbers)
+               _cast("double*", _positions),
+               _cast("double*", _lattice),
+               _cast("bool*", _periodic),
+           )
+
+   def _cast(ctype, array):
+       """Cast a numpy array to a FFI pointer"""
+       return (
+           library.ffi.NULL
+           if array is None
+           else library.ffi.cast(ctype, array.ctypes.data)
+       )
+
 
 Installing software at advanced difficulty
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- language-specific build systems (setuptools, fpm, ...) have shortcomings for interlanguage bindings
+
+  - cross-compilation for bindings or extensions usually poorly supported (if at all)
+  - particularities of foreign language must be accounted for in the build system
+  - distribution model of language might be not flexible enough (Python wheels, ...)
+
+- start with general-purpose build system (meson, cmake, ...)
+
+  - clean support for handling multiple languages
+  - possibility to split build into multiple projects (useful for distributions)
 
 
 Summary
@@ -753,8 +912,22 @@ Summary
 What can we do?
 ~~~~~~~~~~~~~~~
 
+- opaque pointers and callbacks allow emulating Fortran classes
+
+
 What would we like?
 ~~~~~~~~~~~~~~~~~~~
+
+- mechanism to dispatch or recover type information of opaque pointers
+
+  - runtime type checking, *e.g.* recover mixed up arguments
+  - dispatching in generic routines, *e.g.* deconstruction
+
+
+Further reading
+~~~~~~~~~~~~~~~
+
+- `Crafting Interpreters <https://craftinginterpreters.com/>`_ by Robert Nystrom
 
 
 Discussion
