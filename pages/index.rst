@@ -13,7 +13,7 @@ Using objects across language boundaries
 
    ^^^
 
-   Exploring the limits of language intercompatibility and consistent API design
+   Exploring the limits of language interoperability and consistent API design
 
 .. article-info::
    :avatar: _static/catcher.png
@@ -28,19 +28,39 @@ Motivation
 ----------
 
 - scientific libraries are not a closed ecosystem
-- need for (easy) interfacing with other projects and robust dependency management
-- more flexibility when interfacing via APIs rather than IO
+- need for (easy) interfacing with other projects and robust *dependency management*
+- more *flexibility* when interfacing via APIs rather than IO
+- *in-process* communication rather than managing microservices
 - we already have enough incompatible / undocumented ASCII file formats for data exchange
 
-.. image:: _static/c-intercompatibility.png
+
+Approches to interoperability
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- foreign function interface (`libffi <https://sourceware.org/libffi/>`_)
+
+  - used in CPython with `ctypes <https://docs.python.org/3/library/ctypes.html>`_ in standard library
+
+- source generation from C headers
+
+  - simplified wrapper and interface generator (`SWIG <http://www.swig.org/>`_)
+  - `cffi <https://cffi.readthedocs.io/en/latest/>`__ to generate Python wrappers from C headers
+
+- direct compatibility to C
+
+.. image:: _static/c-interoperability.png
    :align: center
    :width: 50%
 
-Language intercompatibility
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- not all libraries share the same programming language
-- C is the *lingua franca* for communication between languages
+.. important::
+
+   There is no single solution for interoperability.
+
+
+Language interoperability in Fortran
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - *bind(c)* with *iso_c_binding* for definition in Fortran
 
   - allows manipulation of C data types in Fortran
@@ -92,6 +112,19 @@ Language intercompatibility
   (compile-time dispatch requires a compiler)
 - API bindings are not necessarily part of the upstream project
   (relying on semantic versioning conventions)
+- calling conventions different between platforms
+  (cdecl vs. stdcall)
+
+
+.. note::
+
+   Compilers can help exporting the C header.
+
+   .. code-block:: text
+
+      gfortran -fc-prototypes -fsyntax-only foopss_api.f90 > foopss.h
+
+   Either as build system step (not all compilers support this) or to generate a template.
 
 
 Object-oriented patterns for stable APIs
@@ -104,8 +137,7 @@ Object-oriented patterns for stable APIs
 
    `NLopt <https://nlopt.readthedocs.io>`_ is a prime example of a library with interfaces and bindings in many languages.
 
-   It can be used from C, C++, Fortran, Matlab, Octave, Python, Guile, Julia,
-   R, Lua, OCaml, or Rust.
+   It can be used from C, C++, Fortran, Matlab, Octave, Python, Guile, Julia, R, Lua, OCaml, or Rust.
 
 .. grid:: 2
    :gutter: 0
@@ -209,11 +241,14 @@ On the C side
 - potential data redundancy and needless copying of the data is needed
   (if objects own their data)
 
+  - (external) memory management is an open question for Fortran
+  - ``allocate`` / ``deallocate`` statements can not be substituted from C
+  - could use ``pointer`` for using chunks of externally managed memory
+    (different design required)
+
 
 In C
 ----
-
-
 
 Emulating objects in C
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -267,7 +302,7 @@ What makes a classy object
 
          struct a_cls {
            char* label;
-           int ndim;
+           int32_t ndim;
            double* bounds;
 
            void (* set_bounds)(struct a_cls*, const double*);
@@ -276,7 +311,7 @@ What makes a classy object
 
          struct b_cls {
            char* label;
-           int ndim;
+           int32_t ndim;
            double* bounds;
            void (* set_bounds)(struct a_cls*, const double*);
            void (* get_bounds)(struct a_cls*, double*);
@@ -452,14 +487,14 @@ Handling errors
    foopss_delete_error(foopss_error* /* error */);
 
    /// Check error handle status
-   extern int
+   extern int32_t
    foopss_check_error(foopss_error /* error */);
 
    /// Get error message from error handle
    extern void
    foopss_get_error(foopss_error /* error */,
                     char* /* buffer */,
-                    const int* /* buffersize */);
+                    const int32_t* /* buffersize */);
 
 
 Callback mechanism
@@ -485,11 +520,11 @@ Callback mechanism
      abstract interface
        !> Interface for callbacks used in custom logger
        subroutine callback(msg, len, udata)
-         import :: c_char, c_ptr, c_int
+         import :: c_char, c_ptr, c_int32_t
          !> Message payload to be displayed
          character(kind=c_char) :: msg(*)
          !> Length of the message
-         integer(c_int) :: len
+         integer(c_int32_t) :: len
          !> Data pointer for callback
          type(c_ptr), value :: udata
        end subroutine callback
@@ -550,7 +585,7 @@ Callback mechanism
        character(kind=c_char) :: charptr(len(msg))
 
        charptr = transfer(msg, charptr)
-       call self%callback(charptr, size(charptr, kind=c_int), self%udata)
+       call self%callback(charptr, size(charptr, kind=c_int32_t), self%udata)
      end subroutine message
    end module foopss_api
 
@@ -565,7 +600,7 @@ Callback mechanism
    typedef struct _foopss_context* foopss_context;
 
    /// Define callback function for use in custom logger
-   typedef void (*foopss_logger_callback)(char*, int, void*);
+   typedef void (*foopss_logger_callback)(char*, int32_t, void*);
 
    // ...
 
@@ -579,7 +614,7 @@ Callback mechanism
 
    /// Example for a callback function
    void
-   example_callback(char* msg, int len, void* udata) {
+   example_callback(char* msg, int32_t len, void* udata) {
      /* print len chars from msg, since it need not NUL terminated */
      printf("[callback] %.*s\n", msg, len);
    }
@@ -701,7 +736,7 @@ Python ctypes
    _foopss.foopss_delete_context.argtypes = [ct.POINTER(ct.c_void_p)]
 
    # Prototype for callback function, pass-through PyObject
-   logger_callback = ct.CFUNCTYPE(None, ct.c_char_p, ct.c_int, ct.py_object)
+   logger_callback = ct.CFUNCTYPE(None, ct.c_char_p, ct.c_int32, ct.py_object)
 
    # Some type safety for callback signatures, user-data
    _foopss.foopss_set_context_logger.argtypes = [ct.c_void_p, logger_callback, ct.py_object]
@@ -787,7 +822,7 @@ From errors to exceptions
 - ctypes or cffi wrapped C-libraries still look and feel like C when used in Python
 - create convenience wrappers for creating (and deleting) objects
 
-  - cffi can setup proper a garbage collection routine for any object
+  - cffi can setup a proper garbage collection routine for any object
 
 - use a decorator for transforming library errors to exception
 
@@ -876,7 +911,7 @@ From a C-ish to a Pythonic API
 
            self._mol = library.new_structure(
                self._natoms,
-               _cast("int*", _numbers)
+               _cast("int32_t*", _numbers)
                _cast("double*", _positions),
                _cast("double*", _lattice),
                _cast("bool*", _periodic),
@@ -913,6 +948,10 @@ What can we do?
 ~~~~~~~~~~~~~~~
 
 - opaque pointers and callbacks allow emulating Fortran classes
+- Fortran compiler can help exporting C headers directly from Fortran source code
+- wrapper generators can consume C headers to produce language-specific bindings
+- build systems already encode the required knowledge to glue languages together
+- keep compatible versions together via package managers
 
 
 What would we like?
@@ -923,11 +962,21 @@ What would we like?
   - runtime type checking, *e.g.* recover mixed up arguments
   - dispatching in generic routines, *e.g.* deconstruction
 
+- convenience features for generating C from Fortran
+
+  - declare typedefs in Fortran for opaque pointers
+
+- better encoding support for handling strings
+- export native types from Fortran like CFI descriptors in an ABI compatible way
+
+  - more transparent memory management by exposing CFI allocator / deallocator
+
 
 Further reading
 ~~~~~~~~~~~~~~~
 
 - `Crafting Interpreters <https://craftinginterpreters.com/>`_ by Robert Nystrom
+- `Making Libraries Consumable for Non-C++ Developers <https://www.youtube.com/watch?v=4r09pv9v1w0>`_ by Aaron R. Robinson
 
 
 Discussion
