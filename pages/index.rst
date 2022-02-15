@@ -37,13 +37,13 @@ Motivation
 Approches to interoperability
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- foreign function interface (`libffi <https://sourceware.org/libffi/>`_)
+- foreign function interface (`libffi <https://sourceware.org/libffi/>`__)
 
-  - used in CPython with `ctypes <https://docs.python.org/3/library/ctypes.html>`_ in standard library
+  - used in CPython with `ctypes <https://docs.python.org/3/library/ctypes.html>`__ in standard library
 
 - source generation from C headers
 
-  - simplified wrapper and interface generator (`SWIG <http://www.swig.org/>`_)
+  - simplified wrapper and interface generator (`SWIG <http://www.swig.org/>`__)
   - `cffi <https://cffi.readthedocs.io/en/latest/>`__ to generate Python wrappers from C headers
 
 - direct compatibility to C
@@ -74,7 +74,7 @@ Language interoperability in Fortran
 
 .. margin::
 
-   Join the discussion on a proposal for enabling ABI compatibility at `fortran_proposals#247 <https://github.com/j3-fortran/fortran_proposals/issues/247>`_.
+   Join the discussion on a proposal for enabling ABI compatibility at `fortran_proposals#247 <https://github.com/j3-fortran/fortran_proposals/issues/247>`__.
 
 .. grid:: 2
    :gutter: 0
@@ -118,7 +118,7 @@ Language interoperability in Fortran
 
 .. note::
 
-   Compilers can help exporting the C header.
+   Compilers can help exporting the C header:
 
    .. code-block:: text
 
@@ -135,7 +135,7 @@ Object-oriented patterns for stable APIs
 
 .. margin::
 
-   `NLopt <https://nlopt.readthedocs.io>`_ is a prime example of a library with interfaces and bindings in many languages.
+   `NLopt <https://nlopt.readthedocs.io>`__ is a prime example of a library with interfaces and bindings in many languages.
 
    It can be used from C, C++, Fortran, Matlab, Octave, Python, Guile, Julia, R, Lua, OCaml, or Rust.
 
@@ -198,6 +198,10 @@ Object-oriented patterns for stable APIs
 ABI compatibility nightmares
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+- interoperability cares about the application binary interface (ABI)
+
+  - compatibility of application programmable interface (API) usually not enough
+
 
 On the Fortran side
 ^^^^^^^^^^^^^^^^^^^
@@ -223,9 +227,9 @@ On the Fortran side
 - vigilance required when linking dynamically
 
   - very tight version pinning in package managers
-  - large rebuild cascades in case of incompatible version changes
+  - large rebuild cascades in case of (ABI) incompatible version changes
 
-- failures happen when compiling or linking incompatible versions
+- failures happen when compiling, linking or loading incompatible versions
 
 
 On the C side
@@ -266,7 +270,7 @@ What makes a classy object
 
 .. margin::
 
-   If you need a quick refresher in C try the `cdecl translator <https://www.cdecl.org/>`_.
+   If you need a quick refresher in C try the `cdecl translator <https://www.cdecl.org/>`__.
 
 .. tab-set::
 
@@ -328,7 +332,7 @@ What makes a classy object
 
 .. important::
 
-   Objects do not have to be transparent to be usable
+   Objects need not be transparent to be usable
 
 
 C compatible wrapping
@@ -345,7 +349,7 @@ C compatible wrapping
 
    Setup on the Fortran side is quite verbose and very explicit about every step.
 
-   This could be templated with a preprocessor like ``fypp``.
+   This could be templated with a preprocessor like `fypp <https://fypp.readthedocs.io>`__.
 
 .. code-block:: fortran
 
@@ -597,7 +601,7 @@ Callback mechanism
    :caption: Exported C API for the callback mechanism
 
    /// Context manager for the library usage
-   typedef struct _foopss_context* foopss_context;
+   typedef struct foopss_context* foopss_context;
 
    /// Define callback function for use in custom logger
    typedef void (*foopss_logger_callback)(char*, int32_t, void*);
@@ -683,12 +687,12 @@ Directly from Fortran to Python?
 
 - several automatic wrapper generators are available
 
-  - `numpy.f2py <https://numpy.org/doc/stable/f2py/usage.html>`_: is mainly targeting legacy Fortran code (objects are not supported)
-  - `f90wrap <https://github.com/jameskermode/f90wrap>`_: is a wrapper generator for Fortran 90
-  - `gfort2py <https://github.com/rjfarmer/gfort2py>`_: GFortran module file based wrapper generator
+  - `numpy.f2py <https://numpy.org/doc/stable/f2py/usage.html>`__: is mainly targeting legacy Fortran code (objects are not supported)
+  - `f90wrap <https://github.com/jameskermode/f90wrap>`__: is a wrapper generator for Fortran 90
+  - `gfort2py <https://github.com/rjfarmer/gfort2py>`__: GFortran module file based wrapper generator
   - many more abandoned projects and tools
 
-- low-level plumbing possible via Python header (Fortran bindings available with `forpy <https://github.com/ylikx/forpy>`_)
+- low-level plumbing possible via Python header (Fortran bindings available with `forpy <https://github.com/ylikx/forpy>`__)
 - more (stable) option to wrap C from Python than wrapping Fortran from Python
 
   - most projects need/want C API anyway
@@ -697,7 +701,7 @@ Directly from Fortran to Python?
 Python ctypes
 ^^^^^^^^^^^^^
 
-- `ctypes <https://docs.python.org/3/library/ctypes.html>`_: low-level Python interface to C
+- `ctypes <https://docs.python.org/3/library/ctypes.html>`__: low-level Python interface to C
 - dynamic loading of shared libraries via dlopen
 
   - requires definition of signatures in Python (duplication)
@@ -709,7 +713,7 @@ Python ctypes
   - manual deconstruction best wrapped by a context manager
     (``__enter__`` and ``__exit__`` hooks)
 
-- `numpy.ctypeslib <https://numpy.org/doc/stable/reference/routines.ctypeslib.html>`_ provides convenience functions
+- `numpy.ctypeslib <https://numpy.org/doc/stable/reference/routines.ctypeslib.html>`__ provides convenience functions
 
   - numpy objects pass through API without additional effort (``numpy.ctypeslib.as_array``)
 
@@ -748,7 +752,7 @@ Python ctypes
 Foreign function interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- `cffi <https://cffi.readthedocs.org>`_ module allows different access modes
+- `cffi <https://cffi.readthedocs.org>`__ module allows different access modes
 
   - in-line ABI level mode similar to Python ctypes (but allows typdefs)
   - out-of-line API mode most useful for creating standalone extension modules
@@ -762,7 +766,7 @@ Foreign function interface
 
 .. margin::
 
-   The `pkgconfig <https://github.com/matze/pkgconfig>`_ module can produce cffi compatible ``kwargs`` and ``cflags`` directly from a pc file
+   The `pkgconfig <https://github.com/matze/pkgconfig>`__ module can produce cffi compatible ``kwargs`` and ``cflags`` directly from a pc file
 
 .. code-block:: python
    :caption: ffibuilder.py
@@ -933,7 +937,7 @@ Installing software at advanced difficulty
 
   - cross-compilation for bindings or extensions usually poorly supported (if at all)
   - particularities of foreign language must be accounted for in the build system
-  - distribution model of language might be not flexible enough (Python wheels, ...)
+  - distribution model of language might not be flexible enough (Python wheels, ...)
 
 - start with general-purpose build system (meson, cmake, ...)
 
@@ -975,8 +979,8 @@ What would we like?
 Further reading
 ~~~~~~~~~~~~~~~
 
-- `Crafting Interpreters <https://craftinginterpreters.com/>`_ by Robert Nystrom
-- `Making Libraries Consumable for Non-C++ Developers <https://www.youtube.com/watch?v=4r09pv9v1w0>`_ by Aaron R. Robinson
+- `Crafting Interpreters <https://craftinginterpreters.com/>`__ by Robert Nystrom
+- `Making Libraries Consumable for Non-C++ Developers <https://www.youtube.com/watch?v=4r09pv9v1w0>`__ by Aaron R. Robinson
 
 
 Discussion
