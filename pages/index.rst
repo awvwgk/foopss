@@ -869,6 +869,20 @@ From errors to exceptions
        return handle_error
 
 
+Marshalling errors in callbacks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- exceptions must not be thrown to foreign runtimes
+
+  - leaves the foreign runtime in an undefined state
+  - probably will crash due to corrupted stack
+
+- callbacks must serialize their exceptions or errors
+
+  - *e.g.* C++ callback in Fortran runtime used from Python
+  - cannot assume that upstream can make sense of the exception
+
+
 From a C-ish to a Pythonic API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -930,6 +944,13 @@ From a C-ish to a Pythonic API
        )
 
 
+Caveats
+^^^^^^^
+
+- serialization of objects with C components is not possible by default
+- opaque handles cannot be deepcopied or pickled
+
+
 Installing software at advanced difficulty
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -981,6 +1002,13 @@ Further reading
 
 - `Crafting Interpreters <https://craftinginterpreters.com/>`__ by Robert Nystrom
 - `Making Libraries Consumable for Non-C++ Developers <https://www.youtube.com/watch?v=4r09pv9v1w0>`__ by Aaron R. Robinson
+
+
+Example projects
+~~~~~~~~~~~~~~~~
+
+- `tblite <https://github.com/tblite/tblite>`__: CFFI with garbage collection, callback for logging
+- `libmbd <https://github.com/libmbd/libmbd>`__: CFFI with context manager, optional mpi4py
 
 
 Discussion
