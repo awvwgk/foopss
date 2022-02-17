@@ -38,7 +38,7 @@ _extra_navbar = """
 """
 
 html_theme_options = {
-    "repository_url": "https://github.com/awvwgk/fortran-oop-seminar-series",
+    "repository_url": "https://github.com/awvwgk/foopss",
     "repository_branch": "main",
     "use_repository_button": True,
     "use_edit_page_button": True,
