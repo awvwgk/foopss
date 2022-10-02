@@ -620,7 +620,7 @@ Callback mechanism
    void
    example_callback(char* msg, int32_t len, void* udata) {
      /* print len chars from msg, since it need not NUL terminated */
-     printf("[callback] %.*s\n", msg, len);
+     printf("[callback] %.*s\n", len, msg);
    }
 
 - can use callback mechanism to implement new classes via API
