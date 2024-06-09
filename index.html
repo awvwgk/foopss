@@ -1,0 +1,1627 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Using objects across language boundaries &#8212; Fortran OOP Seminar Series</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=84ace793992934648b4de8eed757e5a2" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/design-tabs.js"></script>
+    <script src="_static/sphinx-book-theme.9d8b4a8b9bb19db25eeaddc40d639ba2.js"></script>
+    <link rel="shortcut icon" href="_static/fortran-logo.svg"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<div class="col-12 col-md-3 bd-sidebar site-navigation " id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="#">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/foopss-logo.svg" class="logo" alt="logo">
+      
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+</div>
+
+
+          
+
+
+          
+<!-- This is an invisible pixel that we watch to see if we've scrolled. -->
+<div class="sbt-scroll-pixel-helper"></div>
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            <div class="topbar-left">
+                
+                <label class="nav-toggle-button" for="__navigation">
+                    <div class="visually-hidden">Toggle navigation</div>
+                    <i class="fas fa-bars"></i>
+                </label>
+                
+            </div>
+            
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/awvwgk/foopss"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        <a class="edit-button" href="https://github.com/awvwgk/foopss/edit/main/pages/index.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#motivation">
+   Motivation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#approches-to-interoperability">
+     Approches to interoperability
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#language-interoperability-in-fortran">
+     Language interoperability in Fortran
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#object-oriented-patterns-for-stable-apis">
+     Object-oriented patterns for stable APIs
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#abi-compatibility-nightmares">
+     ABI compatibility nightmares
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#on-the-fortran-side">
+       On the Fortran side
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#on-the-c-side">
+       On the C side
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#in-c">
+   In C
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#emulating-objects-in-c">
+     Emulating objects in C
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#what-makes-a-classy-object">
+       What makes a classy object
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#c-compatible-wrapping">
+       C compatible wrapping
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#bad-practice-c">
+       Bad practice C
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#compile-time-dispatch-in-c">
+       Compile time dispatch in C
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#handling-errors">
+       Handling errors
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#callback-mechanism">
+       Callback mechanism
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#practical-tips">
+     Practical tips
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#in-python">
+   In Python
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#directly-from-fortran-to-python">
+     Directly from Fortran to Python?
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#python-ctypes">
+       Python ctypes
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#foreign-function-interface">
+       Foreign function interface
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#from-errors-to-exceptions">
+       From errors to exceptions
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#marshalling-errors-in-callbacks">
+       Marshalling errors in callbacks
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#from-a-c-ish-to-a-pythonic-api">
+     From a C-ish to a Pythonic API
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#caveats">
+       Caveats
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#installing-software-at-advanced-difficulty">
+     Installing software at advanced difficulty
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#what-can-we-do">
+     What can we do?
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#what-would-we-like">
+     What would we like?
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#further-reading">
+     Further reading
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-projects">
+     Example projects
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#discussion">
+   Discussion
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Using objects across language boundaries</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#motivation">
+   Motivation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#approches-to-interoperability">
+     Approches to interoperability
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#language-interoperability-in-fortran">
+     Language interoperability in Fortran
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#object-oriented-patterns-for-stable-apis">
+     Object-oriented patterns for stable APIs
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#abi-compatibility-nightmares">
+     ABI compatibility nightmares
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#on-the-fortran-side">
+       On the Fortran side
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#on-the-c-side">
+       On the C side
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#in-c">
+   In C
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#emulating-objects-in-c">
+     Emulating objects in C
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#what-makes-a-classy-object">
+       What makes a classy object
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#c-compatible-wrapping">
+       C compatible wrapping
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#bad-practice-c">
+       Bad practice C
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#compile-time-dispatch-in-c">
+       Compile time dispatch in C
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#handling-errors">
+       Handling errors
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#callback-mechanism">
+       Callback mechanism
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#practical-tips">
+     Practical tips
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#in-python">
+   In Python
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#directly-from-fortran-to-python">
+     Directly from Fortran to Python?
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#python-ctypes">
+       Python ctypes
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#foreign-function-interface">
+       Foreign function interface
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#from-errors-to-exceptions">
+       From errors to exceptions
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#marshalling-errors-in-callbacks">
+       Marshalling errors in callbacks
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#from-a-c-ish-to-a-pythonic-api">
+     From a C-ish to a Pythonic API
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#caveats">
+       Caveats
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#installing-software-at-advanced-difficulty">
+     Installing software at advanced difficulty
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#summary">
+   Summary
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#what-can-we-do">
+     What can we do?
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#what-would-we-like">
+     What would we like?
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#further-reading">
+     Further reading
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-projects">
+     Example projects
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#discussion">
+   Discussion
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="section" id="using-objects-across-language-boundaries">
+<h1 class="sd-d-none">Using objects across language boundaries<a class="headerlink" href="#using-objects-across-language-boundaries" title="Permalink to this headline">¶</a></h1>
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-none sd-border-0 sd-bg-danger sd-px-3 sd-py-1 sd-rounded-3 docutils">
+<div class="sd-card-header sd-text-white sd-fs-3 sd-font-weight-bold sd-border-0 sd-text-center docutils">
+<p class="sd-card-text">Using objects across language boundaries</p>
+</div>
+<div class="sd-card-body sd-text-white sd-fs-5 sd-border-0 sd-text-center docutils">
+<p class="sd-card-text">Exploring the limits of language interoperability and consistent API design</p>
+</div>
+</div>
+<div class="sd-container-fluid sd-sphinx-override sd-p-0 sd-mt-2 sd-mb-4 sd-p-2 sd-rounded-3 docutils">
+<div class="sd-row sd-row-cols-2 sd-gx-2 sd-gy-1 docutils">
+<div class="sd-col sd-col-auto sd-d-flex-row sd-align-minor-center docutils">
+<a class="reference external image-reference" href="https://github.com/awvwgk"><img alt="" class="sd-avatar-sm sd-outline-muted" src="_images/catcher.png" /></a>
+</div>
+<div class="sd-col sd-d-flex-row sd-align-minor-center docutils">
+<div class="sd-container-fluid sd-sphinx-override docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-3 sd-row-cols-md-3 sd-row-cols-lg-3 sd-gx-3 sd-gy-1 docutils">
+<div class="sd-col sd-col-auto sd-d-flex-row sd-align-minor-center docutils">
+<p class="sd-p-0 sd-m-0">Sebastian Ehlert</p>
+</div>
+<div class="sd-col sd-col-auto sd-d-flex-row sd-align-minor-center docutils">
+<p class="sd-p-0 sd-m-0"><span class="sd-pr-2"><svg version="1.1" width="16.0px" height="16.0px" class="sd-octicon sd-octicon-calendar" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M4.75 0a.75.75 0 01.75.75V2h5V.75a.75.75 0 011.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0113.25 16H2.75A1.75 1.75 0 011 14.25V3.75C1 2.784 1.784 2 2.75 2H4V.75A.75.75 0 014.75 0zm0 3.5h8.5a.25.25 0 01.25.25V6h-11V3.75a.25.25 0 01.25-.25h2zm-2.25 4v6.75c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25V7.5h-11z"></path></svg></span>17th February 2022</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>scientific libraries are not a closed ecosystem</p></li>
+<li><p>need for (easy) interfacing with other projects and robust <em>dependency management</em></p></li>
+<li><p>more <em>flexibility</em> when interfacing via APIs rather than IO</p></li>
+<li><p><em>in-process</em> communication rather than managing microservices</p></li>
+<li><p>we already have enough incompatible / undocumented ASCII file formats for data exchange</p></li>
+</ul>
+<div class="section" id="approches-to-interoperability">
+<h3>Approches to interoperability<a class="headerlink" href="#approches-to-interoperability" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>foreign function interface (<a class="reference external" href="https://sourceware.org/libffi/">libffi</a>)</p>
+<ul>
+<li><p>used in CPython with <a class="reference external" href="https://docs.python.org/3/library/ctypes.html">ctypes</a> in standard library</p></li>
+</ul>
+</li>
+<li><p>source generation from C headers</p>
+<ul>
+<li><p>simplified wrapper and interface generator (<a class="reference external" href="http://www.swig.org/">SWIG</a>)</p></li>
+<li><p><a class="reference external" href="https://cffi.readthedocs.io/en/latest/">cffi</a> to generate Python wrappers from C headers</p></li>
+</ul>
+</li>
+<li><p>direct compatibility to C</p></li>
+</ul>
+<a class="reference internal image-reference" href="_images/c-interoperability.png"><img alt="_images/c-interoperability.png" class="align-center" src="_images/c-interoperability.png" style="width: 50%;" /></a>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>There is no single solution for interoperability.</p>
+</div>
+</div>
+<div class="section" id="language-interoperability-in-fortran">
+<h3>Language interoperability in Fortran<a class="headerlink" href="#language-interoperability-in-fortran" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><em>bind(c)</em> with <em>iso_c_binding</em> for definition in Fortran</p>
+<ul>
+<li><p>allows manipulation of C data types in Fortran</p></li>
+<li><p>Fortran language constructs are easily accessible
+(<em>e.g.</em>, using modules, pointer, class(*), etc.)</p></li>
+</ul>
+</li>
+<li><p><em>ISO_Fortran_binding.h</em> for definition in C</p>
+<ul>
+<li><p>allows manipulation of Fortran data types in C</p></li>
+<li><p>provides a stable API for C, but does not guarantee ABI compatibility</p></li>
+</ul>
+</li>
+</ul>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>Join the discussion on a proposal for enabling ABI compatibility at <a class="reference external" href="https://github.com/j3-fortran/fortran_proposals/issues/247">fortran_proposals#247</a>.</p>
+</div>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-0 sd-g-xs-0 sd-g-sm-0 sd-g-md-0 sd-g-lg-0 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-none sd-border-0 sd-p-0 docutils">
+<div class="sd-card-body docutils">
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">CFI_dim_t</span></code> in Intel Fortran / NAG Fortran</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">CFI_index_t</span><span class="w"> </span><span class="n">extent</span><span class="p">;</span>
+<span class="w">    </span><span class="n">CFI_index_t</span><span class="w"> </span><span class="n">sm</span><span class="p">;</span>
+<span class="w">    </span><span class="n">CFI_index_t</span><span class="w"> </span><span class="n">lower_bound</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">CFI_dim_t</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-none sd-border-0 sd-p-0 docutils">
+<div class="sd-card-body docutils">
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">CFI_dim_t</span></code> in GCC Fortran / LLVM Flang</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">CFI_index_t</span><span class="w"> </span><span class="n">lower_bound</span><span class="p">;</span>
+<span class="w">    </span><span class="n">CFI_index_t</span><span class="w"> </span><span class="n">extent</span><span class="p">;</span>
+<span class="w">    </span><span class="n">CFI_index_t</span><span class="w"> </span><span class="n">sm</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">CFI_dim_t</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>we can only see symbols and pointers from other languages</p></li>
+<li><p>generic interfaces, overloaded operators, … are not available
+(compile-time dispatch requires a compiler)</p></li>
+<li><p>API bindings are not necessarily part of the upstream project
+(relying on semantic versioning conventions)</p></li>
+<li><p>calling conventions different between platforms
+(cdecl vs. stdcall)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Compilers can help exporting the C header:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>gfortran -fc-prototypes -fsyntax-only foopss_api.f90 &gt; foopss.h
+</pre></div>
+</div>
+<p>Either as build system step (not all compilers support this) or to generate a template.</p>
+</div>
+</div>
+<div class="section" id="object-oriented-patterns-for-stable-apis">
+<h3>Object-oriented patterns for stable APIs<a class="headerlink" href="#object-oriented-patterns-for-stable-apis" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>adding new features does not break function signatures</p></li>
+<li><p>individual procedures can be simpler</p></li>
+</ul>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p><a class="reference external" href="https://nlopt.readthedocs.io">NLopt</a> is a prime example of a library with interfaces and bindings in many languages.</p>
+<p>It can be used from C, C++, Fortran, Matlab, Octave, Python, Guile, Julia, R, Lua, OCaml, or Rust.</p>
+</div>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-0 sd-g-xs-0 sd-g-sm-0 sd-g-md-0 sd-g-lg-0 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-none sd-border-0 sd-p-0 docutils">
+<div class="sd-card-body docutils">
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Procedural API in NLopt 1.x</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">nlopt_result</span>
+<span class="nf">nlopt_minimize</span><span class="p">(</span>
+<span class="w">  </span><span class="n">nlopt_algorithm</span><span class="w"> </span><span class="n">algorithm</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span>
+<span class="w">  </span><span class="n">nlopt_func</span><span class="w"> </span><span class="n">f</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">f_data</span><span class="p">,</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">lb</span><span class="p">,</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">ub</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">minf</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">minf_max</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">ftol_rel</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">ftol_abs</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">xtol_rel</span><span class="p">,</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">xtol_abs</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">maxeval</span><span class="p">,</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">maxtime</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-none sd-border-0 sd-p-0 docutils">
+<div class="sd-card-body docutils">
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Object-oriented API in NLopt 2.x</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">nlopt_opt_s</span><span class="o">*</span><span class="w"> </span><span class="n">nlopt_opt</span><span class="p">;</span>
+
+<span class="n">nlopt_opt</span>
+<span class="nf">nlopt_create</span><span class="p">(</span><span class="n">nlopt_algorithm</span><span class="w"> </span><span class="n">algorithm</span><span class="p">,</span>
+<span class="w">             </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n</span><span class="p">);</span>
+
+<span class="n">nlopt_result</span>
+<span class="nf">nlopt_set_min_objective</span><span class="p">(</span><span class="n">nlopt_opt</span><span class="w"> </span><span class="n">opt</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">nlopt_func</span><span class="w"> </span><span class="n">f</span><span class="p">,</span>
+<span class="w">                        </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">f_data</span><span class="p">);</span>
+
+<span class="n">nlopt_result</span>
+<span class="nf">nlopt_optimize</span><span class="p">(</span><span class="n">nlopt_opt</span><span class="w"> </span><span class="n">opt</span><span class="p">,</span>
+<span class="w">               </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">,</span>
+<span class="w">               </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">opt_f</span><span class="p">);</span>
+
+<span class="kt">void</span>
+<span class="nf">nlopt_destroy</span><span class="p">(</span><span class="n">nlopt_opt</span><span class="w"> </span><span class="n">opt</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="abi-compatibility-nightmares">
+<h3>ABI compatibility nightmares<a class="headerlink" href="#abi-compatibility-nightmares" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>interoperability cares about the application binary interface (ABI)</p>
+<ul>
+<li><p>compatibility of application programmable interface (API) usually not enough</p></li>
+</ul>
+</li>
+</ul>
+<div class="section" id="on-the-fortran-side">
+<h4>On the Fortran side<a class="headerlink" href="#on-the-fortran-side" title="Permalink to this headline">¶</a></h4>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>ABI issues can be ignored in the case of static linking.</p>
+<p>However, dynamic linking remains preferred in the case of shared libraries which should be loaded into other languages.</p>
+</div>
+<ul class="simple">
+<li><p>object-oriented APIs can leak symbols into dependent libraries</p>
+<ul>
+<li><p>transient dependencies become full dependencies</p></li>
+</ul>
+</li>
+<li><p>no ABI conventions, easy to break ABI with API-compatible changes</p>
+<ul>
+<li><p>changes in class definition result in ABI breakage</p></li>
+<li><p>renaming functions in generic interfaces breaks ABI</p></li>
+<li><p>adding (optional) arguments to procedures is breaking the ABI</p></li>
+<li><p>so does changing the compiler</p></li>
+<li><p>…</p></li>
+</ul>
+</li>
+<li><p>vigilance required when linking dynamically</p>
+<ul>
+<li><p>very tight version pinning in package managers</p></li>
+<li><p>large rebuild cascades in case of (ABI) incompatible version changes</p></li>
+</ul>
+</li>
+<li><p>failures happen when compiling, linking or loading incompatible versions</p></li>
+</ul>
+</div>
+<div class="section" id="on-the-c-side">
+<h4>On the C side<a class="headerlink" href="#on-the-c-side" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>most stable ABI available to build on</p></li>
+<li><p>ABI issues can be hidden behind opaque pointers</p></li>
+<li><p>objects must not be exchanged between libraries</p>
+<ul>
+<li><p>each library must work only on its own objects</p></li>
+<li><p>do not blindly cast typdef-ed pointers (generally a bad idea)</p></li>
+</ul>
+</li>
+<li><p>potential data redundancy and needless copying of the data is needed
+(if objects own their data)</p>
+<ul>
+<li><p>(external) memory management is an open question for Fortran</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">allocate</span></code> / <code class="docutils literal notranslate"><span class="pre">deallocate</span></code> statements can not be substituted from C</p></li>
+<li><p>could use <code class="docutils literal notranslate"><span class="pre">pointer</span></code> for using chunks of externally managed memory
+(different design required)</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="in-c">
+<h2>In C<a class="headerlink" href="#in-c" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="emulating-objects-in-c">
+<h3>Emulating objects in C<a class="headerlink" href="#emulating-objects-in-c" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>objects are represented as opaque pointers (<code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*</span></code>)</p></li>
+<li><p>typedef-ed pointers for better readability and some type safety</p></li>
+<li><p>C11 <code class="docutils literal notranslate"><span class="pre">_Generic</span></code> can be used to dispatch at compile time</p></li>
+</ul>
+<div class="section" id="what-makes-a-classy-object">
+<h4>What makes a classy object<a class="headerlink" href="#what-makes-a-classy-object" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Fortran standard does not specify implementation of class objects</p></li>
+<li><p>simple design model are C structs with overlapping fields and procedure pointers</p></li>
+</ul>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>If you need a quick refresher in C try the <a class="reference external" href="https://www.cdecl.org/">cdecl translator</a>.</p>
+</div>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-0">
+Fortran</label><div class="sd-tab-content docutils">
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Crude (and possibly incorrect) Fortran class model</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">type</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a_cls</span>
+<span class="w">  </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">label</span>
+<span class="w">  </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ndim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bounds</span><span class="p">(:)</span>
+<span class="k">contains</span>
+<span class="k">  procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set_bounds</span>
+<span class="w">  </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">get_bounds</span>
+<span class="k">end type</span>
+
+<span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">extends</span><span class="p">(</span><span class="n">a_cls</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">b_cls</span>
+<span class="c">! character(len=:), allocatable :: label</span>
+<span class="c">! integer :: ndim = 0</span>
+<span class="c">! real(wp), allocatable :: bounds(:)</span>
+<span class="c">! procedure, pointer :: set_bounds</span>
+<span class="c">! procedure, pointer :: get_bounds</span>
+<span class="w">  </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0_wp</span>
+<span class="k">contains</span>
+<span class="k">  procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set_scale</span>
+<span class="k">end type</span>
+</pre></div>
+</div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-1">
+C</label><div class="sd-tab-content docutils">
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Emulating class objects in C</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">a_cls</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">label</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">ndim</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">bounds</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">set_bounds</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">a_cls</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">get_bounds</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">a_cls</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">b_cls</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">label</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">ndim</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">bounds</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">set_bounds</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">a_cls</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">get_bounds</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">a_cls</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">*</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">scale</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">set_scale</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">b_cls</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>C-ish way of polymorphism builds on memory layout and casting pointers</p>
+<ul>
+<li><p>procedure pointers provide a way to dispatch at runtime</p></li>
+<li><p>casting around pointers probably worse than <code class="docutils literal notranslate"><span class="pre">select</span> <span class="pre">type</span></code> in Fortran</p></li>
+</ul>
+</li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Objects need not be transparent to be usable</p>
+</div>
+</div>
+<div class="section" id="c-compatible-wrapping">
+<h4>C compatible wrapping<a class="headerlink" href="#c-compatible-wrapping" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>class polymorphic cannot be pointed to by a C-pointer</p></li>
+<li><p>use thin wrapper type around Fortran objects</p>
+<ul>
+<li><p>metadata can be attached to the wrapper</p></li>
+<li><p>can store class polymorphic objects and preserve their state</p></li>
+<li><p>allocation status of components is available</p></li>
+</ul>
+</li>
+</ul>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>Setup on the Fortran side is quite verbose and very explicit about every step.</p>
+<p>This could be templated with a preprocessor like <a class="reference external" href="https://fypp.readthedocs.io">fypp</a>.</p>
+</div>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">module </span><span class="n">foopss_api</span>
+<span class="w">  </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">iso_c_binding</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">c_ptr</span><span class="p">,</span><span class="w"> </span><span class="nb">c_loc</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="p">&amp;</span><span class="w"> </span><span class="nb">c_f_pointer</span><span class="p">,</span><span class="w"> </span><span class="nb">c_associated</span><span class="p">,</span><span class="w"> </span><span class="nb">c_null_ptr</span>
+<span class="nb">  </span><span class="k">use </span><span class="n">foopss_structure</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">structure_type</span>
+<span class="w">  </span><span class="k">implicit none</span>
+
+<span class="k">  type</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vp_structure</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">structure_type</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">raw</span>
+<span class="w">  </span><span class="k">end type </span><span class="n">vp_structure</span>
+
+<span class="k">contains</span>
+
+<span class="k">  function </span><span class="n">foopss_new_structure</span><span class="p">()</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">new</span><span class="p">)</span><span class="w"> </span><span class="k">bind</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">new</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">vp_structure</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">struc</span>
+
+<span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="n">struc</span><span class="p">)</span>
+<span class="w">    </span><span class="n">new</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">c_loc</span><span class="p">(</span><span class="n">struc</span><span class="p">)</span>
+<span class="w">  </span><span class="k">end function </span><span class="n">foopss_new_structure</span>
+
+<span class="w">  </span><span class="k">subroutine </span><span class="n">foopss_delete_structure</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span><span class="w"> </span><span class="k">bind</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ptr</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">vp_structure</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">struc</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">c_associated</span><span class="p">(</span><span class="n">ptr</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      call </span><span class="nb">c_f_pointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">struc</span><span class="p">)</span>
+<span class="w">      </span><span class="k">deallocate</span><span class="p">(</span><span class="n">struc</span><span class="p">)</span>
+<span class="w">      </span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">c_null_ptr</span><span class="w">  </span><span class="c">! ensure repeated calls to delete become no-ops</span>
+<span class="w">    </span><span class="k">end if</span>
+<span class="k">  end subroutine </span><span class="n">foopss_delete_structure</span>
+<span class="k">end module </span><span class="n">foopss_api</span>
+</pre></div>
+</div>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>Automatic wrapper tools might impose preferences.</p>
+</div>
+<ul class="simple">
+<li><p>deconstructor can either take the pointer by value or by reference</p>
+<ul>
+<li><p>by value: C side has to invalidate the (dangling) pointer by assigning <code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></li>
+<li><p>by reference: Fortran side can nullify C pointer</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">foopss_structure</span><span class="o">*</span><span class="w"> </span><span class="n">foopss_structure</span><span class="p">;</span>
+
+<span class="k">extern</span><span class="w"> </span><span class="n">foopss_structure</span>
+<span class="nf">foopss_new_structure</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="k">extern</span><span class="w"> </span><span class="kt">void</span>
+<span class="nf">foopss_delete_structure</span><span class="p">(</span><span class="n">foopss_structure</span><span class="o">*</span><span class="w"> </span><span class="cm">/* struc */</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="bad-practice-c">
+<h4>Bad practice C<a class="headerlink" href="#bad-practice-c" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>nobody stops our users from accidentally passing the wrong objects (there will be warnings)</p></li>
+</ul>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>Usage of <code class="docutils literal notranslate"><span class="pre">-Werror</span></code> only gets you so far.</p>
+<p>New compiler versions can introduce new warnings which negate the benefits of always failing on warnings.</p>
+<p>Also, Fortran compilers can produce lots of spurious warnings.</p>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>app/main.c:16:29: warning: initialization of ‘foopss_structure’ {aka ‘struct foopss_structure *’} from incompatible pointer type ‘foopss_context’ {aka ‘struct foopss_context *’} [-Wincompatible-pointer-types]
+   16 |    foopss_structure struc = ctx;
+      |                             ^~~
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>app/main.c:17:28: warning: passing argument 1 of ‘foopss_delete_structure’ from incompatible pointer type [-Wincompatible-pointer-types]
+   17 |    foopss_delete_structure(&amp;ctx);
+      |                            ^~~~
+      |                            |
+      |                            struct foopss_context **
+In file included from app/main.c:4:
+./include/foopss.h:28:25: note: expected ‘struct foopss_structure **’ but argument is of type ‘struct foopss_context **’
+   28 | foopss_delete_structure(foopss_structure*);
+      |                         ^~~~~~~~~~~~~~~~~
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>even worse: the binding language to C cannot distinguish between different typdef-ed objects (<em>e.g.</em> Python’s ctypes)</p></li>
+</ul>
+</div>
+<div class="section" id="compile-time-dispatch-in-c">
+<h4>Compile time dispatch in C<a class="headerlink" href="#compile-time-dispatch-in-c" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_Generic</span></code> allows us to dispatch typedef-ed pointers at compile time</p>
+<ul>
+<li><p>usually defined as a type generic macro</p></li>
+<li><p>difficult to use outside of C</p></li>
+</ul>
+</li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">C11 equivalent to the Fortran interface</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">_Generic</span><span class="p">((</span><span class="n">obj</span><span class="p">),</span>
+<span class="w">         </span><span class="nl">foopss_context</span><span class="p">:</span><span class="w"> </span><span class="n">foopss_delete_context</span><span class="p">,</span>
+<span class="w">         </span><span class="nl">foopss_structure</span><span class="p">:</span><span class="w"> </span><span class="n">foopss_delete_structure</span><span class="p">,</span>
+<span class="w">         </span><span class="nl">foopss_calculator</span><span class="p">:</span><span class="w"> </span><span class="n">foopss_delete_calculator</span><span class="p">,</span>
+<span class="w">         </span><span class="nl">foopss_result</span><span class="p">:</span><span class="w"> </span><span class="n">foopss_delete_result</span><span class="p">,</span>
+<span class="w">        </span><span class="p">)(</span><span class="o">&amp;</span><span class="n">obj</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="handling-errors">
+<h4>Handling errors<a class="headerlink" href="#handling-errors" title="Permalink to this headline">¶</a></h4>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>Projects like libcurl are most strict about error handling and reporting.
+Even out-of-memory errors are handled gracefully and reported.</p>
+</div>
+<ul class="simple">
+<li><p>well-behaving libraries must never stop under any circumstances</p></li>
+<li><p>errors should be propagated up, the caller must be able to handle them gracefully</p></li>
+<li><p>runtime must not be left in an undefined state (do not throw exceptions through foreign languages)</p></li>
+<li><p>rich error reporting is preferable over plain error codes</p>
+<ul>
+<li><p>can include error message and context more easily</p></li>
+<li><p>implemented via opaque pointer or C-compatible struct</p></li>
+<li><p>API for both querying (and creating) error context</p></li>
+</ul>
+</li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Minimalistic error handle API</span><a class="headerlink" href="#id8" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">/// Error instance</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">foopss_error</span><span class="o">*</span><span class="w"> </span><span class="n">foopss_error</span><span class="p">;</span>
+
+<span class="c1">/// Create new error handle</span>
+<span class="k">extern</span><span class="w"> </span><span class="n">foopss_error</span>
+<span class="nf">foopss_new_error</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="c1">/// Delete an error handle</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">void</span>
+<span class="nf">foopss_delete_error</span><span class="p">(</span><span class="n">foopss_error</span><span class="o">*</span><span class="w"> </span><span class="cm">/* error */</span><span class="p">);</span>
+
+<span class="c1">/// Check error handle status</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">int32_t</span>
+<span class="nf">foopss_check_error</span><span class="p">(</span><span class="n">foopss_error</span><span class="w"> </span><span class="cm">/* error */</span><span class="p">);</span>
+
+<span class="c1">/// Get error message from error handle</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">void</span>
+<span class="nf">foopss_get_error</span><span class="p">(</span><span class="n">foopss_error</span><span class="w"> </span><span class="cm">/* error */</span><span class="p">,</span>
+<span class="w">                 </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="cm">/* buffer */</span><span class="p">,</span>
+<span class="w">                 </span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="o">*</span><span class="w"> </span><span class="cm">/* buffersize */</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="callback-mechanism">
+<h4>Callback mechanism<a class="headerlink" href="#callback-mechanism" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>IO features should be implemented in native language (logging, error reporting, …)</p></li>
+<li><p>hooks deep inside algorithm need to communicate or exchange data</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Fortran implementation of the callback mechanism</span><a class="headerlink" href="#id9" title="Permalink to this code">¶</a></div>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">module </span><span class="n">foopss_api</span>
+<span class="w">  </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">iso_c_binding</span>
+<span class="nb">  </span><span class="k">use </span><span class="n">foopss_context_type</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">context_type</span><span class="p">,</span><span class="w"> </span><span class="n">context_logger</span>
+<span class="w">  </span><span class="k">implicit none</span>
+
+<span class="w">  </span><span class="c">!&gt; Void pointer to manage calculation context</span>
+<span class="w">  </span><span class="k">type</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vp_context</span>
+<span class="w">    </span><span class="c">!&gt; Actual payload</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">context_type</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">raw</span>
+<span class="w">  </span><span class="k">end type </span><span class="n">vp_context</span>
+
+<span class="w">  </span><span class="k">abstract interface</span>
+<span class="w">    </span><span class="c">!&gt; Interface for callbacks used in custom logger</span>
+<span class="w">    </span><span class="k">subroutine </span><span class="n">callback</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">,</span><span class="w"> </span><span class="n">udata</span><span class="p">)</span>
+<span class="w">      </span><span class="k">import</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="kt">c_char</span><span class="p">,</span><span class="w"> </span><span class="kt">c_ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">c_int32_t</span>
+<span class="w">      </span><span class="c">!&gt; Message payload to be displayed</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="kt">c_char</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">msg</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<span class="w">      </span><span class="c">!&gt; Length of the message</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="kt">c_int32_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">len</span>
+<span class="w">      </span><span class="c">!&gt; Data pointer for callback</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">udata</span>
+<span class="w">    </span><span class="k">end subroutine </span><span class="n">callback</span>
+<span class="w">  </span><span class="k">end interface</span>
+
+<span class="w">  </span><span class="c">!&gt; Custom logger for calculation context to display messages</span>
+<span class="w">  </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">extends</span><span class="p">(</span><span class="n">context_logger</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">callback_logger</span>
+<span class="w">    </span><span class="c">!&gt; Data pointer for callback</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">udata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">c_null_ptr</span>
+<span class="w">    </span><span class="c">!&gt; Custom callback function to display messages</span>
+<span class="w">    </span><span class="k">procedure</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="p">,</span><span class="w"> </span><span class="k">nopass</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">callback</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
+<span class="w">  </span><span class="k">contains</span>
+<span class="w">    </span><span class="c">!&gt; Entry point for context instance to log message</span>
+<span class="w">    </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">message</span>
+<span class="w">  </span><span class="k">end type </span><span class="n">callback_logger</span>
+
+<span class="k">contains</span>
+
+<span class="w">  </span><span class="c">! ...</span>
+
+<span class="w">  </span><span class="c">!&gt; Create a new custom logger for the calculation context</span>
+<span class="w">  </span><span class="k">subroutine </span><span class="n">foopss_set_context_logger</span><span class="p">(</span><span class="n">vctx</span><span class="p">,</span><span class="w"> </span><span class="n">vproc</span><span class="p">,</span><span class="w"> </span><span class="n">vdata</span><span class="p">)</span><span class="w"> </span><span class="k">bind</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vctx</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">vp_context</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ctx</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="kt">c_funptr</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vproc</span>
+<span class="w">    </span><span class="k">procedure</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fptr</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vdata</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="nb">c_associated</span><span class="p">(</span><span class="n">vctx</span><span class="p">))</span><span class="w"> </span><span class="k">return</span>
+<span class="k">    call </span><span class="nb">c_f_pointer</span><span class="p">(</span><span class="n">vctx</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">ctx</span><span class="p">%</span><span class="n">raw</span><span class="p">%</span><span class="n">io</span><span class="p">))</span><span class="w"> </span><span class="k">deallocate</span><span class="p">(</span><span class="n">ctx</span><span class="p">%</span><span class="n">raw</span><span class="p">%</span><span class="n">io</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">c_associated</span><span class="p">(</span><span class="n">vproc</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      call </span><span class="nb">c_f_procpointer</span><span class="p">(</span><span class="n">vproc</span><span class="p">,</span><span class="w"> </span><span class="n">fptr</span><span class="p">)</span>
+<span class="w">      </span><span class="n">ctx</span><span class="p">%</span><span class="n">raw</span><span class="p">%</span><span class="n">io</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_callback_logger</span><span class="p">(</span><span class="n">fptr</span><span class="p">,</span><span class="w"> </span><span class="n">vdata</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end if</span>
+<span class="k">  end subroutine </span><span class="n">set_context_logger_api</span>
+
+<span class="w">  </span><span class="c">!&gt; Create a new custom logger</span>
+<span class="w">  </span><span class="k">function </span><span class="n">new_callback_logger</span><span class="p">(</span><span class="n">fptr</span><span class="p">,</span><span class="w"> </span><span class="n">udata</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">self</span><span class="p">)</span>
+<span class="w">    </span><span class="c">!&gt; Actual function used to display messages</span>
+<span class="w">    </span><span class="k">procedure</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fptr</span>
+<span class="w">    </span><span class="c">!&gt; Data pointer used inside the callback function</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">udata</span>
+<span class="w">    </span><span class="c">!&gt; New instance of the custom logger</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">callback_logger</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
+
+<span class="w">    </span><span class="n">self</span><span class="p">%</span><span class="n">callback</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">fptr</span>
+<span class="w">    </span><span class="n">self</span><span class="p">%</span><span class="n">udata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">udata</span>
+<span class="w">  </span><span class="k">end function </span><span class="n">new_callback_logger</span>
+
+<span class="w">  </span><span class="c">!&gt; Entry point for context type logger, transfers message from context to callback</span>
+<span class="w">  </span><span class="k">subroutine </span><span class="n">message</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span>
+<span class="w">    </span><span class="c">!&gt; Instance of the custom logger with the actual logger callback function</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">callback_logger</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
+<span class="w">    </span><span class="c">!&gt; Message payload from the calculation context</span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">msg</span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="kt">c_char</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">charptr</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+
+<span class="w">    </span><span class="n">charptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">transfer</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">charptr</span><span class="p">)</span>
+<span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">callback</span><span class="p">(</span><span class="n">charptr</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">charptr</span><span class="p">,</span><span class="w"> </span><span class="nb">kind</span><span class="o">=</span><span class="kt">c_int32_t</span><span class="p">),</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">udata</span><span class="p">)</span>
+<span class="w">  </span><span class="k">end subroutine </span><span class="n">message</span>
+<span class="k">end module </span><span class="n">foopss_api</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li><p>cannot directly use C procedure pointer due to conversion from Fortran to C string</p></li>
+<li><p>call back needs to be wrapped twice in Fortran for robustness</p></li>
+<li><p>string need not be <code class="docutils literal notranslate"><span class="pre">NUL</span></code> terminated when passing length as an argument</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">Exported C API for the callback mechanism</span><a class="headerlink" href="#id10" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">/// Context manager for the library usage</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">foopss_context</span><span class="o">*</span><span class="w"> </span><span class="n">foopss_context</span><span class="p">;</span>
+
+<span class="c1">/// Define callback function for use in custom logger</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">foopss_logger_callback</span><span class="p">)(</span><span class="kt">char</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">int32_t</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="p">);</span>
+
+<span class="c1">// ...</span>
+
+<span class="c1">/// Set custom logger function</span>
+<span class="kt">void</span>
+<span class="nf">foopss_set_context_logger</span><span class="p">(</span><span class="n">foopss_context</span><span class="w"> </span><span class="cm">/* ctx */</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">foopss_logger_callback</span><span class="w"> </span><span class="cm">/* callback */</span><span class="p">,</span>
+<span class="w">                          </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="cm">/* userdata */</span><span class="p">);</span>
+
+<span class="c1">// ...</span>
+
+<span class="c1">/// Example for a callback function</span>
+<span class="kt">void</span>
+<span class="nf">example_callback</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">udata</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="cm">/* print len chars from msg, since it need not NUL terminated */</span>
+<span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;[callback] %.*s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li><p>can use callback mechanism to implement new classes via API</p></li>
+<li><p>user data can be carried around via opaque pointer</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="practical-tips">
+<h3>Practical tips<a class="headerlink" href="#practical-tips" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>C macros can help a lot with reducing repetitive boilerplate in the C header</p></li>
+</ul>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>Checkout your systems OpenCL headers for inspiration</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-text">Possible macros for C API header</span><a class="headerlink" href="#id11" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifdef __cplusplus</span>
+<span class="cp">#  define FOOPSS_API_ENTRY extern &quot;C&quot;</span>
+<span class="cp">#else</span>
+<span class="cp">#  define FOOPSS_API_ENTRY extern</span>
+<span class="cp">#endif</span>
+
+<span class="cm">/* for attributes or DLL export stuff on Windows */</span>
+<span class="cp">#define FOOPSS_API_CALL</span>
+
+<span class="cm">/* Labels to keep track of version introducing API */</span>
+<span class="cp">#define FOOPSS_API__V_1_0</span>
+<span class="cp">#define FOOPSS_API__V_1_0_DEPRECATED</span>
+<span class="cp">#define FOOPSS_API__V_1_1</span>
+<span class="cp">#define FOOPSS_API__V_1_2</span>
+
+<span class="c1">// ...</span>
+
+<span class="c1">/// Context manager for the library usage</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">foopss_context</span><span class="o">*</span><span class="w"> </span><span class="n">foopss_context</span><span class="p">;</span>
+
+<span class="c1">/// Define callback function for use in custom logger</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">foopss_logger_callback</span><span class="p">)(</span><span class="kt">char</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">FOOPSS_API__V_1_2</span><span class="p">;</span>
+
+<span class="c1">/// Create new calculation environment object</span>
+<span class="n">FOOPSS_API_ENTRY</span><span class="w"> </span><span class="n">foopss_context</span><span class="w"> </span><span class="n">FOOPSS_API_CALL</span>
+<span class="n">foopss_new_context</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="n">FOOPSS_API__V_1_0</span><span class="p">;</span>
+
+<span class="c1">/// Delete calculation context</span>
+<span class="n">FOOPSS_API_ENTRY</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">FOOPSS_API_CALL</span>
+<span class="n">foopss_delete_context</span><span class="p">(</span><span class="n">foopss_context</span><span class="o">*</span><span class="w"> </span><span class="cm">/* ctx */</span><span class="p">)</span><span class="w"> </span><span class="n">FOOPSS_API__V_1_0</span><span class="p">;</span>
+
+<span class="c1">/// Set custom logger function</span>
+<span class="n">FOOPSS_API_ENTRY</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">FOOPSS_API_CALL</span>
+<span class="n">foopss_set_context_logger</span><span class="p">(</span><span class="n">foopss_context</span><span class="w"> </span><span class="cm">/* ctx */</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">foopss_logger_callback</span><span class="w"> </span><span class="cm">/* callback */</span><span class="p">,</span>
+<span class="w">                          </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="cm">/* userdata */</span><span class="p">)</span><span class="w"> </span><span class="n">FOOPSS_API__V_1_2</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li><p>users can statically check whether an API feature is available by checking whether a macro is defined</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="in-python">
+<h2>In Python<a class="headerlink" href="#in-python" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="directly-from-fortran-to-python">
+<h3>Directly from Fortran to Python?<a class="headerlink" href="#directly-from-fortran-to-python" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>several automatic wrapper generators are available</p>
+<ul>
+<li><p><a class="reference external" href="https://numpy.org/doc/stable/f2py/usage.html">numpy.f2py</a>: is mainly targeting legacy Fortran code (objects are not supported)</p></li>
+<li><p><a class="reference external" href="https://github.com/jameskermode/f90wrap">f90wrap</a>: is a wrapper generator for Fortran 90</p></li>
+<li><p><a class="reference external" href="https://github.com/rjfarmer/gfort2py">gfort2py</a>: GFortran module file based wrapper generator</p></li>
+<li><p>many more abandoned projects and tools</p></li>
+</ul>
+</li>
+<li><p>low-level plumbing possible via Python header (Fortran bindings available with <a class="reference external" href="https://github.com/ylikx/forpy">forpy</a>)</p></li>
+<li><p>more (stable) option to wrap C from Python than wrapping Fortran from Python</p>
+<ul>
+<li><p>most projects need/want C API anyway</p></li>
+</ul>
+</li>
+</ul>
+<div class="section" id="python-ctypes">
+<h4>Python ctypes<a class="headerlink" href="#python-ctypes" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/ctypes.html">ctypes</a>: low-level Python interface to C</p></li>
+<li><p>dynamic loading of shared libraries via dlopen</p>
+<ul>
+<li><p>requires definition of signatures in Python (duplication)</p></li>
+<li><p>library name is platform dependent and logic must be handled in Python</p></li>
+<li><p>no type safety for opaque pointers (all declared as <code class="docutils literal notranslate"><span class="pre">c_void_p</span></code>)</p></li>
+</ul>
+</li>
+<li><p>no automatic deconstruction available for objects</p>
+<ul>
+<li><p>manual deconstruction best wrapped by a context manager
+(<code class="docutils literal notranslate"><span class="pre">__enter__</span></code> and <code class="docutils literal notranslate"><span class="pre">__exit__</span></code> hooks)</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/routines.ctypeslib.html">numpy.ctypeslib</a> provides convenience functions</p>
+<ul>
+<li><p>numpy objects pass through API without additional effort (<code class="docutils literal notranslate"><span class="pre">numpy.ctypeslib.as_array</span></code>)</p></li>
+</ul>
+</li>
+<li><p>no compiled dependencies in your Python package</p></li>
+<li><p>no additional dependencies in Python</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Example usage of ctypes</span><a class="headerlink" href="#id12" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctypes</span> <span class="k">as</span> <span class="nn">ct</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">op</span>
+
+<span class="c1"># layout when installed in same $PREFIX is usually (not true on Windows)</span>
+<span class="c1"># $PREFIX/lib/libfoopss.*</span>
+<span class="c1"># $PREFIX/lib/python3.x/site-packages/foopss.py</span>
+<span class="n">_foopss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ctypeslib</span><span class="o">.</span><span class="n">load_library</span><span class="p">(</span><span class="s1">&#39;libfoopss&#39;</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+
+<span class="c1"># Can only declare opaque handle, but not typedef it</span>
+<span class="n">_foopss</span><span class="o">.</span><span class="n">foopss_new_context</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span>
+
+<span class="c1"># For ctypes passing the void* by value might be preferable</span>
+<span class="n">_foopss</span><span class="o">.</span><span class="n">foopss_delete_context</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ct</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">)]</span>
+
+<span class="c1"># Prototype for callback function, pass-through PyObject</span>
+<span class="n">logger_callback</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_char_p</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_int32</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">py_object</span><span class="p">)</span>
+
+<span class="c1"># Some type safety for callback signatures, user-data</span>
+<span class="n">_foopss</span><span class="o">.</span><span class="n">foopss_set_context_logger</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span> <span class="n">logger_callback</span><span class="p">,</span> <span class="n">ct</span><span class="o">.</span><span class="n">py_object</span><span class="p">]</span>
+<span class="n">_foopss</span><span class="o">.</span><span class="n">foopss_set_context_logger</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># ...</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="foreign-function-interface">
+<h4>Foreign function interface<a class="headerlink" href="#foreign-function-interface" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p><a class="reference external" href="https://cffi.readthedocs.org">cffi</a> module allows different access modes</p>
+<ul>
+<li><p>in-line ABI level mode similar to Python ctypes (but allows typdefs)</p></li>
+<li><p>out-of-line API mode most useful for creating standalone extension modules</p></li>
+<li><p>runtime requirement on cffi module</p></li>
+</ul>
+</li>
+<li><p>C parser is very limited, manual preprocessing of headers required</p>
+<ul>
+<li><p>preprocessed header can produce complete extension module source code</p></li>
+<li><p>low effort solution for creating the actual glue code and defining the extension module</p></li>
+</ul>
+</li>
+</ul>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>The <a class="reference external" href="https://github.com/matze/pkgconfig">pkgconfig</a> module can produce cffi compatible <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> and <code class="docutils literal notranslate"><span class="pre">cflags</span></code> directly from a pc file</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">ffibuilder.py</span><a class="headerlink" href="#id13" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">cffi</span>
+
+<span class="n">library</span> <span class="o">=</span> <span class="s2">&quot;foopss&quot;</span>
+<span class="n">include_header</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;#include &quot;</span><span class="si">{</span><span class="n">library</span><span class="si">}</span><span class="s1">.h&quot;&#39;</span>
+<span class="n">prefix_var</span> <span class="o">=</span> <span class="n">library</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;_PREFIX&quot;</span>
+<span class="k">if</span> <span class="n">prefix_var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+    <span class="n">prefix_var</span> <span class="o">=</span> <span class="s2">&quot;CONDA_PREFIX&quot;</span>
+<span class="n">module_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">library</span><span class="si">}</span><span class="s2">._lib</span><span class="si">{</span><span class="n">library</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># Detection logic must provide:</span>
+<span class="c1"># - dict with libraries to link as well as include, library and runtime directories</span>
+<span class="c1"># - additional flags for C-compiler to find headers</span>
+<span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">libraries</span><span class="o">=</span><span class="p">[</span><span class="n">library</span><span class="p">])</span>
+<span class="n">cflags</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">if</span> <span class="n">prefix_var</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">prefix_var</span><span class="p">]</span>
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="n">include_dirs</span><span class="o">=</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="s2">&quot;include&quot;</span><span class="p">)],</span>
+        <span class="n">library_dirs</span><span class="o">=</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="s2">&quot;lib&quot;</span><span class="p">)],</span>
+        <span class="n">runtime_library_dirs</span><span class="o">=</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="s2">&quot;lib&quot;</span><span class="p">)],</span>
+    <span class="p">)</span>
+    <span class="n">cflags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-I&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="s2">&quot;include&quot;</span><span class="p">))</span>
+
+<span class="c1"># pycparser cannot handle preprocessor gracefully</span>
+<span class="c1"># - manual preprocessing required via C compiler or cpp required</span>
+<span class="n">cc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CC&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;CC&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="k">else</span> <span class="s2">&quot;cc&quot;</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">cc</span><span class="p">,</span> <span class="o">*</span><span class="n">cflags</span><span class="p">,</span> <span class="s2">&quot;-E&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span>
+    <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+    <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+    <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">(</span><span class="n">include_header</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+
+<span class="c1"># Definitions of API from header</span>
+<span class="n">cdefs</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+<span class="c1"># Final construction extension module source</span>
+<span class="c1"># - distutils/setuptools handle this automatically</span>
+<span class="c1"># - manual run has to write the C source</span>
+<span class="n">ffibuilder</span> <span class="o">=</span> <span class="n">cffi</span><span class="o">.</span><span class="n">FFI</span><span class="p">()</span>
+<span class="n">ffibuilder</span><span class="o">.</span><span class="n">set_source</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">include_header</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">ffibuilder</span><span class="o">.</span><span class="n">cdef</span><span class="p">(</span><span class="n">cdefs</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+   <span class="n">ffibuilder</span><span class="o">.</span><span class="n">distutils_extension</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="from-errors-to-exceptions">
+<h4>From errors to exceptions<a class="headerlink" href="#from-errors-to-exceptions" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>ctypes or cffi wrapped C-libraries still look and feel like C when used in Python</p></li>
+<li><p>create convenience wrappers for creating (and deleting) objects</p>
+<ul>
+<li><p>cffi can setup a proper garbage collection routine for any object</p></li>
+</ul>
+</li>
+<li><p>use a decorator for transforming library errors to exception</p></li>
+</ul>
+<div class="margin sidebar">
+<p class="sidebar-title"></p>
+<p>With a consistent design of the API, <em>i.e.</em> always passing the error handle as first element, wrapping of library functions becomes much easier</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">foopss/library.py</span><a class="headerlink" href="#id14" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">from</span> <span class="nn">._libfoopss</span> <span class="kn">import</span> <span class="n">ffi</span><span class="p">,</span> <span class="n">lib</span>
+
+<span class="k">def</span> <span class="nf">_delete_error</span><span class="p">(</span><span class="n">err</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete an error handle object&quot;&quot;&quot;</span>
+    <span class="n">ptr</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;foopss_error *&quot;</span><span class="p">)</span>
+    <span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">err</span>
+    <span class="n">lib</span><span class="o">.</span><span class="n">foopss_delete_error</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">new_error</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create new error handle object&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ffi</span><span class="o">.</span><span class="n">gc</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="n">foopss_new_error</span><span class="p">(),</span> <span class="n">_delete_error</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">error_check</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle errors for library functions that require an error handle&quot;&quot;&quot;</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">handle_error</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run function and than compare context&quot;&quot;&quot;</span>
+        <span class="n">_err</span> <span class="o">=</span> <span class="n">new_error</span><span class="p">()</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">_err</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lib</span><span class="o">.</span><span class="n">foopss_check_error</span><span class="p">(</span><span class="n">_err</span><span class="p">):</span>
+            <span class="n">_message</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;char[]&quot;</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+            <span class="n">lib</span><span class="o">.</span><span class="n">foopss_get_error</span><span class="p">(</span><span class="n">_err</span><span class="p">,</span> <span class="n">_message</span><span class="p">,</span> <span class="n">ffi</span><span class="o">.</span><span class="n">NULL</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">ffi</span><span class="o">.</span><span class="n">string</span><span class="p">(</span><span class="n">_message</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">handle_error</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="marshalling-errors-in-callbacks">
+<h4>Marshalling errors in callbacks<a class="headerlink" href="#marshalling-errors-in-callbacks" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>exceptions must not be thrown to foreign runtimes</p>
+<ul>
+<li><p>leaves the foreign runtime in an undefined state</p></li>
+<li><p>probably will crash due to corrupted stack</p></li>
+</ul>
+</li>
+<li><p>callbacks must serialize their exceptions or errors</p>
+<ul>
+<li><p><em>e.g.</em> C++ callback in Fortran runtime used from Python</p></li>
+<li><p>cannot assume that upstream can make sense of the exception</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="from-a-c-ish-to-a-pythonic-api">
+<h3>From a C-ish to a Pythonic API<a class="headerlink" href="#from-a-c-ish-to-a-pythonic-api" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>thin wrappers still retain C-ish handling for objects</p>
+<ul>
+<li><p>okay for procedural APIs</p></li>
+<li><p>different expectations between object-oriented C and Python</p></li>
+</ul>
+</li>
+<li><p>another layer needed to make Pythonic classes and objects</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">library</span>
+
+
+<span class="k">class</span> <span class="nc">Structure</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a wrapped structure object in foopss.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; from foopss.interface import Structure</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; mol = Structure(</span>
+<span class="sd">    ...     positions=np.array([</span>
+<span class="sd">    ...         [+0.00000000000000, +0.00000000000000, -0.73578586109551],</span>
+<span class="sd">    ...         [+1.44183152868459, +0.00000000000000, +0.36789293054775],</span>
+<span class="sd">    ...         [-1.44183152868459, +0.00000000000000, +0.36789293054775],</span>
+<span class="sd">    ...     ]),</span>
+<span class="sd">    ...     numbers = np.array([8, 1, 1]),</span>
+<span class="sd">    ... )</span>
+<span class="sd">    ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_mol</span> <span class="o">=</span> <span class="n">library</span><span class="o">.</span><span class="n">ffi</span><span class="o">.</span><span class="n">NULL</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numbers</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">periodic</span><span class="p">):</span>
+        <span class="n">_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;i4&quot;</span><span class="p">)</span>
+        <span class="n">_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+        <span class="n">_lattice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+        <span class="n">_periodic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">periodic</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;bool&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mol</span> <span class="o">=</span> <span class="n">library</span><span class="o">.</span><span class="n">new_structure</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_natoms</span><span class="p">,</span>
+            <span class="n">_cast</span><span class="p">(</span><span class="s2">&quot;int32_t*&quot;</span><span class="p">,</span> <span class="n">_numbers</span><span class="p">)</span>
+            <span class="n">_cast</span><span class="p">(</span><span class="s2">&quot;double*&quot;</span><span class="p">,</span> <span class="n">_positions</span><span class="p">),</span>
+            <span class="n">_cast</span><span class="p">(</span><span class="s2">&quot;double*&quot;</span><span class="p">,</span> <span class="n">_lattice</span><span class="p">),</span>
+            <span class="n">_cast</span><span class="p">(</span><span class="s2">&quot;bool*&quot;</span><span class="p">,</span> <span class="n">_periodic</span><span class="p">),</span>
+        <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_cast</span><span class="p">(</span><span class="n">ctype</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cast a numpy array to a FFI pointer&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">library</span><span class="o">.</span><span class="n">ffi</span><span class="o">.</span><span class="n">NULL</span>
+        <span class="k">if</span> <span class="n">array</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="n">library</span><span class="o">.</span><span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">ctype</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="caveats">
+<h4>Caveats<a class="headerlink" href="#caveats" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>serialization of objects with C components is not possible by default</p></li>
+<li><p>opaque handles cannot be deepcopied or pickled</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="installing-software-at-advanced-difficulty">
+<h3>Installing software at advanced difficulty<a class="headerlink" href="#installing-software-at-advanced-difficulty" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>language-specific build systems (setuptools, fpm, …) have shortcomings for interlanguage bindings</p>
+<ul>
+<li><p>cross-compilation for bindings or extensions usually poorly supported (if at all)</p></li>
+<li><p>particularities of foreign language must be accounted for in the build system</p></li>
+<li><p>distribution model of language might not be flexible enough (Python wheels, …)</p></li>
+</ul>
+</li>
+<li><p>start with general-purpose build system (meson, cmake, …)</p>
+<ul>
+<li><p>clean support for handling multiple languages</p></li>
+<li><p>possibility to split build into multiple projects (useful for distributions)</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="what-can-we-do">
+<h3>What can we do?<a class="headerlink" href="#what-can-we-do" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>opaque pointers and callbacks allow emulating Fortran classes</p></li>
+<li><p>Fortran compiler can help exporting C headers directly from Fortran source code</p></li>
+<li><p>wrapper generators can consume C headers to produce language-specific bindings</p></li>
+<li><p>build systems already encode the required knowledge to glue languages together</p></li>
+<li><p>keep compatible versions together via package managers</p></li>
+</ul>
+</div>
+<div class="section" id="what-would-we-like">
+<h3>What would we like?<a class="headerlink" href="#what-would-we-like" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>mechanism to dispatch or recover type information of opaque pointers</p>
+<ul>
+<li><p>runtime type checking, <em>e.g.</em> recover mixed up arguments</p></li>
+<li><p>dispatching in generic routines, <em>e.g.</em> deconstruction</p></li>
+</ul>
+</li>
+<li><p>convenience features for generating C from Fortran</p>
+<ul>
+<li><p>declare typedefs in Fortran for opaque pointers</p></li>
+</ul>
+</li>
+<li><p>better encoding support for handling strings</p></li>
+<li><p>export native types from Fortran like CFI descriptors in an ABI compatible way</p>
+<ul>
+<li><p>more transparent memory management by exposing CFI allocator / deallocator</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="further-reading">
+<h3>Further reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://craftinginterpreters.com/">Crafting Interpreters</a> by Robert Nystrom</p></li>
+<li><p><a class="reference external" href="https://www.youtube.com/watch?v=4r09pv9v1w0">Making Libraries Consumable for Non-C++ Developers</a> by Aaron R. Robinson</p></li>
+</ul>
+</div>
+<div class="section" id="example-projects">
+<h3>Example projects<a class="headerlink" href="#example-projects" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/tblite/tblite">tblite</a>: CFFI with garbage collection, callback for logging</p></li>
+<li><p><a class="reference external" href="https://github.com/libmbd/libmbd">libmbd</a>: CFFI with context manager, optional mpi4py</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="discussion">
+<h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<script
+   type="text/javascript"
+   src="https://utteranc.es/client.js"
+   async="async"
+   repo="awvwgk/foopss"
+   issue-number="2"
+   theme="github-light"
+   crossorigin="anonymous"
+/></div>
+</div>
+
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Sebastian Ehlert<br/>
+    
+        &copy; Copyright 2022 Sebastian Ehlert.<br/>
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
